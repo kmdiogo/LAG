@@ -1,29 +1,22 @@
 #include <iostream>
 #include <fstream>
-#include "token_recognizers/token_recognizers.h"
+#include "TokenRecognizer/TokenRecognizer.h"
 #define PATH "C:\\Users\\Kenny\\Desktop\\LAG\\input.txt"
 #define PATH2 "E:\\Programming\\YSU\\CSCI 5807 - Compiler Design\\LAG\\input.txt"
 using namespace std;
 
-enum Tokens {Class, Token, Identifier, Error};
 string TokensStr[] = {"Class", "Token", "Identifier", "Error"};
-
-Tokens getNextToken(ifstream& file) {
-    if (matchClass(file))
-        return Class;
-    else
-        return Error;
-}
 
 int main() {
     ifstream file;
-    file.open(PATH2);
+    file.open(PATH);
     if (!file) {
         cout << "Unable to open file" << endl;
         return 0;
     }
-    char ch;
-    cout << TokensStr[getNextToken(file)];
+    TokenRecognizer tr = TokenRecognizer();
+    cout << tr.getNextToken(file).second << endl;
+    cout << tr.getNextToken(file).second;
     file.close();
     return 0;
 }

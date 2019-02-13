@@ -3,4 +3,4 @@ project(LAG)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(LAG main.cpp token_recognizers/token_recognizers.cpp utils/utils.cpp utils/utils.h token_recognizers/token_recognizers.h)
+add_executable(LAG main.cpp utils/utils.cpp utils/utils.h TokenRecognizer/TokenRecognizer.cpp TokenRecognizer/TokenRecognizer.h)
