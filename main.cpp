@@ -16,7 +16,8 @@ int main() {
     }
     TokenRecognizer tr = TokenRecognizer();
     cout << tr.getNextToken(file).second << endl;
-    cout << tr.getNextToken(file).second;
+    cout << tr.getNextToken(file).second << endl;
+    cout << tr.getNextToken(file).second << endl;
     file.close();
     return 0;
 }

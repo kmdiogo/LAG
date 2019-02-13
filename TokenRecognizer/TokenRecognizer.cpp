@@ -15,8 +15,15 @@ pair<Tokens, string> TokenRecognizer::getNextToken(istream &file) {
             return matchToken(file);
         else if (isalpha(cur) || cur == '_')
             return matchIdentifier(file);
+        else if (cur == '[' && lookahead == '^')
+            return make_pair(SetStartNegate, string() + cur + lookahead);
+        else if (cur == '[')
+            return make_pair(SetStart, "[");
+        else if (cur == '-' && lookahead == ']')
+            return make_pair(SetStartNegate, string() + cur + lookahead);
+
     }
-    cout << "No recognized tokens in given file" << endl;
+    cout << "No recognized tokens in remainder of the file" << endl;
     exit(0);
 }
 

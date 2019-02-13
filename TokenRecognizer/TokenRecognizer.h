@@ -19,6 +19,7 @@ private:
     pair<Tokens, string> matchClass(istream &file);
     pair<Tokens, string> matchToken(istream &file);
     pair<Tokens, string> matchIdentifier(istream &file);
+
 };
 
 
