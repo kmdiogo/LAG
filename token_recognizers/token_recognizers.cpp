@@ -1,7 +1,7 @@
 #include "token_recognizers.h"
 using namespace std;
 
-bool nextTokenIsClass(ifstream &file) {
+bool matchClass(ifstream &file) {
     int startPos = file.tellg();
 
     string lexeme;
@@ -18,16 +18,17 @@ bool nextTokenIsClass(ifstream &file) {
             cout << "Invalid Class Identifier: " << lexeme;
             exit(0);
         }
-        return nextTokenIsSet(file);
+        return matchSet(file);
     }
 }
 
-bool nextTokenIsSet(ifstream &file) {
+bool matchSet(ifstream &file) {
     int startPos = file.tellg();
     string lexeme;
     file >> lexeme;
 
     // Check for closing brackets
+    // TODO: Ask Kramer about what nextToken should return
     if (lexeme[0] == '\\' && lexeme[1] == '[') {
         if (lexeme[lexeme.length()-2] == '\\' && lexeme[lexeme.length()-1] == ']') {
             return true;

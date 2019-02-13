@@ -7,9 +7,10 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 #include "../utils/utils.h"
 
-bool nextTokenIsClass(std::ifstream&);
-bool nextTokenIsSet(std::ifstream&);
+bool matchClass(std::ifstream &file);
+bool matchSet(std::ifstream &file);
 
 #endif //LAG_TOKEN_RECOGNIZERS_H
