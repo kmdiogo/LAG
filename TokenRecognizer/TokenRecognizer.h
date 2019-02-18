@@ -8,16 +8,16 @@
 #include <iostream>
 #include <fstream>
 #include <utility>
+#include <cstdlib>
 using namespace std;
-enum Tokens {Class, Token, Identifier, SetStart, SetStartNegate, SetBody, SetEnd, SetEndDash};
+
+enum Tokens {Class, Token, Identifier, SetStart, SetStartNegate, SetEnd, SetEndDash, Character, Dash};
 
 class TokenRecognizer {
 public:
-    pair<Tokens, string> getNextToken(istream &file);
+    pair<Tokens, string> getNextToken(istream &file, bool);
 
 private:
-    pair<Tokens, string> matchClass(istream &file);
-    pair<Tokens, string> matchToken(istream &file);
     pair<Tokens, string> matchIdentifier(istream &file);
 
 };
