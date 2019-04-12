@@ -1,26 +1,30 @@
 #include <iostream>
 #include <fstream>
-#include "TokenRecognizer/TokenRecognizer.h"
+#include "TokenReturner/TokenReturner.h"
+#include "Parser/Parser.h"
+#include "utils/utils.h"
+
 #define PATH "C:\\Users\\Kenny\\Desktop\\LAG\\input.txt"
 #define PATH2 "E:\\Programming\\YSU\\CSCI 5807 - Compiler Design\\LAG\\input.txt"
 using namespace std;
 
-string TokensStr[] = {"Class", "Token", "Identifier", "SetStart", "SetStartNegate", "SetEnd", "SetEndDash", "Character", "Dash"};
-
-void printPair(pair<Tokens, string> p) {
-    cout << TokensStr[p.first] << ' ' << p.second << endl;
-}
 int main() {
     ifstream file;
-    file.open(PATH2);
+    file.open(PATH);
     if (!file) {
         cout << "Unable to open file" << endl;
         return 0;
     }
-    TokenRecognizer tr = TokenRecognizer();
-    printPair(tr.getNextToken(file, false));
-    printPair(tr.getNextToken(file, false));
-    printPair(tr.getNextToken(file, false));
+    /*printPair(getNextToken(file, true));
+    printPair(getNextToken(file, true));
+    printPair(getNextToken(file, false));
+    printPair(getNextToken(file, false));
+    printPair(getNextToken(file, false));
+    printPair(getNextToken(file, false));
+    printPair(getNextToken(file, false));
+    printPair(getNextToken(file, false));*/
+
+    Parser p = Parser(file);
     file.close();
     return 0;
 }

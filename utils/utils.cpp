@@ -13,3 +13,12 @@ bool isValidIdentifier(string id) {
     return true;
 }
 
+void printPair(pair<Tokens, string> p) {
+    cout << TokensStr[p.first] << ' ' << p.second << endl;
+}
+
+void printPair(pair<Tokens, string> p) {
+    cout << "Parse Error: " << endl;
+    printPair(p);
+}
+
