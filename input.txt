@@ -1,1 +1,1 @@
-class _Digit [^a-f-]
+class _Digit [^a-f-]$

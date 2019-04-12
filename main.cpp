@@ -10,7 +10,7 @@ using namespace std;
 
 int main() {
     ifstream file;
-    file.open(PATH);
+    file.open(PATH2);
     if (!file) {
         cout << "Unable to open file" << endl;
         return 0;
@@ -24,7 +24,8 @@ int main() {
     printPair(getNextToken(file, false));
     printPair(getNextToken(file, false));*/
 
-    Parser p = Parser(file);
+    Parser p = Parser(PATH2);
+    p.parse();
     file.close();
     return 0;
 }

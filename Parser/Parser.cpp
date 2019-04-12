@@ -94,19 +94,16 @@ bool Parser::matchCItem() {
 
     cur = getNextToken(file, false);
 
-    if (cur.first != Dash) {
-        printError(cur);
-        return false;
+    if (cur.first == Dash) {
+        cur = getNextToken(file, false);
+        if (cur.first != Character) {
+            printError(cur);
+        }
+        return true;
     }
-
-    cur = getNextToken(file, false);
-
-    if (cur.first != Character) {
-        printError(cur);
-        return false;
+    else {
+        return true;
     }
-
-    return true;
 }
 
 bool Parser::matchTokenStmt() {
@@ -134,5 +131,108 @@ bool Parser::matchTokenStmt() {
         return false;
     }
 
+    cur = getNextToken(file, false);
 
+    if (cur.second != "/") {
+        printError(cur);
+        return false;
+    }
+
+    return true;
+}
+
+bool Parser::matchIgnoreStmt(){
+    if (cur.first != Ignore) {
+        printError(cur);
+        return false;
+    }
+
+    cur = getNextToken(file, false);
+
+    if (cur.second != "/") {
+        printError(cur);
+        return false;
+    }
+
+    cur = getNextToken(file, false);
+
+    if (!matchRegex()) {
+        printError(cur);
+        return false;
+    }
+
+    cur = getNextToken(file, false);
+
+    if (cur.second != "/") {
+        printError(cur);
+        return false;
+    }
+
+    return true;
+}
+
+bool Parser::matchRegex() {
+    if (!matchRTerm()) {
+        return false;
+    }
+
+    while (matchRTerm());
+
+    return true;
+}
+
+bool Parser::matchRTerm() {
+    if (!matchRClosure()) {
+        return false;
+    }
+
+    while(matchRClosure());
+
+    return true;
+}
+
+bool Parser::matchRClosure() {
+    if (!matchRFactor()) {
+        printError(cur);
+        return false;
+    }
+
+
+    cur = getNextToken(file, false);
+    if (cur.first == EOI) {
+        return true;
+    }
+    if (cur.first != Star && cur.first != Plus && cur.first != Question) {
+        printError(cur);
+        return false;
+    }
+}
+
+bool Parser::matchRFactor() {
+    if (cur.first == SetStart) {
+        cur = getNextToken(file, true);
+        if (cur.first != Id) {
+            printError(cur);
+            return false;
+        }
+        cur = getNextToken(file, false);
+        if (cur.first != SetEnd) {
+            printError(cur);
+            return false;
+        }
+        return true;
+    }
+    if (cur.second == "(") {
+        cur = getNextToken(file, true);
+        if (!matchRegex()) {
+            printError(cur);
+            return false;
+        }
+        cur = getNextToken(file, false);
+        if (cur.second != ")") {
+            printError(cur);
+            return false;
+        }
+        return true;
+    }
 }

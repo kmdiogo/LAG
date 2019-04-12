@@ -1,6 +1,10 @@
 #include "utils.h"
 using namespace std;
 
+string TokensStr[] = {"Class", "Token", "Id", "Ignore",
+                      "SetStart", "SetStartNegate", "SetEnd", "DashSetEnd",
+                      "Character", "Dash", "Star", "Plus", "Question", "EOI"};
+
 bool isValidIdentifier(string id) {
     // Return false if first character is not underscore or alphabet
     if (!isalpha(id[0]) && id[0] != '_')
@@ -17,8 +21,9 @@ void printPair(pair<Tokens, string> p) {
     cout << TokensStr[p.first] << ' ' << p.second << endl;
 }
 
-void printPair(pair<Tokens, string> p) {
+void printError(pair<Tokens, string> p) {
     cout << "Parse Error: " << endl;
     printPair(p);
+    exit(0);
 }
 

@@ -15,9 +15,9 @@ enum Tokens {Class, Token, Id, Ignore,
         SetStart, SetStartNegate, SetEnd, DashSetEnd,
         Character, Dash, Star, Plus, Question, EOI};
 
-string TokensStr[] = {"Class", "Token", "Id", "Ignore",
+/*string TokensStr[] = {"Class", "Token", "Id", "Ignore",
                       "SetStart", "SetStartNegate", "SetEnd", "DashSetEnd",
-                      "Character", "Dash", "Star", "Plus", "Question", "EOI"};
+                      "Character", "Dash", "Star", "Plus", "Question", "EOI"};*/
 
 pair<Tokens, string> getNextToken(ifstream &file, bool);
 
