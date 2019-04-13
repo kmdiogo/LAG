@@ -21,9 +21,11 @@ void printPair(pair<Tokens, string> p) {
     cout << TokensStr[p.first] << ' ' << p.second << endl;
 }
 
-void printError(pair<Tokens, string> p) {
+void printError(pair<Tokens, string> p, string msg) {
     cout << "Parse Error: " << endl;
+    cout << "Token: ";
     printPair(p);
+    cout << msg << endl;
     exit(0);
 }
 

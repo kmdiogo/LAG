@@ -3,8 +3,9 @@
 
 #include <iostream>
 #include "../TokenReturner/TokenReturner.h"
-bool isValidIdentifier(std::string);
-void printError(pair<Tokens, string> p);
+using namespace std;
+
+void printError(pair<Tokens, string> p, string msg="");
 void printPair(pair<Tokens, string> p);
 
 #endif //LAG_UTILS_H

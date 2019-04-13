@@ -21,7 +21,7 @@ enum Tokens {Class, Token, Id, Ignore,
 
 pair<Tokens, string> getNextToken(ifstream &file, bool);
 
-pair<Tokens, string> getCTII(ifstream &file);
+pair<Tokens, string> getCTII(ifstream &file, char cur);
 
 
 #endif //LAG_TOKENRECOGNIZER_H

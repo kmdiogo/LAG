@@ -16,14 +16,11 @@ bool Parser::matchStmtList(){
     if (cur.first == EOI)
         return true;
     else {
+        // TODO: Fix repetition with grammar rules
         if (!matchStmt()) {
-            printError(cur);
-            return false;
+            printError(cur, "Stmt not matched in stmtList");
         }
-        if (!matchStmtList()) {
-            printError(cur);
-            return false;
-        }
+        while (matchStmt());
         return true;
     }
 }
@@ -32,7 +29,6 @@ bool Parser::matchStmt() {
     if (!matchClassStmt()) {
         if (!matchTokenStmt()) {
             if (!matchIgnoreStmt()) {
-                printError(cur);
                 return false;
             }
         }
@@ -41,8 +37,10 @@ bool Parser::matchStmt() {
 }
 
 bool Parser::matchClassStmt() {
+    cur = getNextToken(file, true);
+
     if (cur.first != Class) {
-        printError(cur);
+        return false;
     }
 
     cur = getNextToken(file, true);
@@ -61,8 +59,9 @@ bool Parser::matchClassStmt() {
 
     if (!matchCItemList()) {
         printError(cur);
-        return false;
     }
+
+    //cur = getNextToken(file, false);
 
     if (cur.first != SetEnd && cur.first != DashSetEnd) {
         printError(cur);
@@ -74,21 +73,18 @@ bool Parser::matchCItemList() {
     if (cur.first == EOI)
         return true;
     else {
+        // TODO: fix repetition with grammar rules
         if (!matchCItem()) {
-            printError(cur);
-            return false;
+            printError(cur, "cItem not matched in cItemList");
         }
-        if (!matchCItemList()) {
-            printError(cur);
-            return false;
-        }
+        while (matchCItem());
         return true;
     }
 }
 
 bool Parser::matchCItem() {
     if (cur.first != Character) {
-        printError(cur);
+        //printError(cur);
         return false;
     }
 
@@ -108,7 +104,6 @@ bool Parser::matchCItem() {
 
 bool Parser::matchTokenStmt() {
     if (cur.first != Token) {
-        printError(cur);
         return false;
     }
 
@@ -116,14 +111,12 @@ bool Parser::matchTokenStmt() {
 
     if (cur.first != Id) {
         printError(cur);
-        return false;
     }
 
     cur = getNextToken(file, false);
 
     if (cur.second != "/") {
         printError(cur);
-        return false;
     }
 
     if (!matchRegex()) {
@@ -135,7 +128,6 @@ bool Parser::matchTokenStmt() {
 
     if (cur.second != "/") {
         printError(cur);
-        return false;
     }
 
     return true;
@@ -143,7 +135,6 @@ bool Parser::matchTokenStmt() {
 
 bool Parser::matchIgnoreStmt(){
     if (cur.first != Ignore) {
-        printError(cur);
         return false;
     }
 
@@ -151,21 +142,18 @@ bool Parser::matchIgnoreStmt(){
 
     if (cur.second != "/") {
         printError(cur);
-        return false;
     }
 
     cur = getNextToken(file, false);
 
     if (!matchRegex()) {
         printError(cur);
-        return false;
     }
 
     cur = getNextToken(file, false);
 
     if (cur.second != "/") {
         printError(cur);
-        return false;
     }
 
     return true;

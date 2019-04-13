@@ -43,17 +43,17 @@ pair<Tokens, string> getNextToken(ifstream &file, bool aggregrate) {
         }
         else {
             if ( (isalpha(cur) || cur == '_'))
-                return getCTII(file);
+                return getCTII(file, cur);
         }
     }
     return make_pair(EOI, "$");
 }
 
 
-pair<Tokens, string> getCTII(ifstream &file) {
-    file.seekg(-2, ios::cur);
-    string lexeme;
-    file >> lexeme;
+pair<Tokens, string> getCTII(ifstream &file, char cur) {
+    string temp;
+    file >> temp;
+    string lexeme = cur + temp;
     if (lexeme == "class")
         return make_pair(Class, lexeme);
     else if (lexeme == "token")

@@ -17,9 +17,9 @@ class Parser {
 public:
     void parse();
     Parser(string path) {
-        file.seekg(0);
+        file.seekg(-1);
         file.open(path);
-        lookahead = getNextToken(file, true);
+        //cur = getNextToken(file, true);
     }
 
 private:
@@ -36,7 +36,6 @@ private:
     bool matchRFactor();
 
     pair<Tokens, string> cur;
-    pair<Tokens, string> lookahead;
     ifstream file;
 };
 

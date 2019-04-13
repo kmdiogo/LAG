@@ -1,1 +1,2 @@
-class _Digit [^a-f-]$
+class _Digit [^a-f-]fwefw
+class hello [a-d]$
