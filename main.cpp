@@ -10,21 +10,13 @@ using namespace std;
 
 int main() {
     ifstream file;
-    file.open(PATH2);
+    file.open(PATH);
     if (!file) {
         cout << "Unable to open file" << endl;
         return 0;
     }
-    /*printPair(getNextToken(file, true));
-    printPair(getNextToken(file, true));
-    printPair(getNextToken(file, false));
-    printPair(getNextToken(file, false));
-    printPair(getNextToken(file, false));
-    printPair(getNextToken(file, false));
-    printPair(getNextToken(file, false));
-    printPair(getNextToken(file, false));*/
 
-    Parser p = Parser(PATH2);
+    Parser p = Parser(PATH);
     p.parse();
     file.close();
     return 0;

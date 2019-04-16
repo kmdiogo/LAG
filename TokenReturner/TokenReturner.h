@@ -13,13 +13,10 @@ using namespace std;
 
 enum Tokens {Class, Token, Id, Ignore,
         SetStart, SetStartNegate, SetEnd, DashSetEnd,
+        OpenParen, CloseParen, Slash,
         Character, Dash, Star, Plus, Question, EOI};
 
-/*string TokensStr[] = {"Class", "Token", "Id", "Ignore",
-                      "SetStart", "SetStartNegate", "SetEnd", "DashSetEnd",
-                      "Character", "Dash", "Star", "Plus", "Question", "EOI"};*/
-
-pair<Tokens, string> getNextToken(ifstream &file, bool);
+pair<Tokens, string> getNextToken(ifstream &file, bool aggregrate);
 
 pair<Tokens, string> getCTII(ifstream &file, char cur);
 

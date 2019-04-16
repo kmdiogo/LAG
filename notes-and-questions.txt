@@ -4,3 +4,7 @@
 ] or -]
 
 How do I handle for example: stmtList -> stmt stmtList
+
+
+use vector of triples to represent parse tree
+(node, left, right) left and right are indexes to the node

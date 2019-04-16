@@ -3,27 +3,19 @@
 //
 
 #include "Parser.h"
-// TODO: Build parse tree
-
-
-pair<Tokens, string> Parser::peekNextToken(bool aggregrate) {
-    int startPos = file.tellg();
-
-    pair<Tokens, string> p = getNextToken(file, aggregrate);
-    file.seekg(startPos, file.beg);
-
-    return p;
-}
 
 void Parser::parse() {
     if (matchStmtList())
         cout << "Parse Successful" << endl;
     else
         cout << "Parse Unsuccessful" << endl;
+
 }
 
 bool Parser::matchStmtList(){
-    if (peekNextToken(true).first == EOI)
+    cur = getNextToken(file, true);
+
+    if (cur.first == EOI)
         return true;
     else {
         // TODO: Check to see if this is the correct way to check epsilon
@@ -46,19 +38,24 @@ bool Parser::matchStmt() {
 }
 
 bool Parser::matchClassStmt() {
-    if (peekNextToken(true).first != Class) {
+    //cur = getNextToken(file, true);
+
+    if (cur.first != Class) {
         return false;
     }
+
     cur = getNextToken(file, true);
 
-    if (peekNextToken(true).first != Id) {
+    if (cur.first != Id) {
         return false;
     }
-    cur = getNextToken(file, true);
 
-    if (peekNextToken(false).first != SetStart && peekNextToken(false).first != SetStartNegate) {
+    cur = getNextToken(file, false);
+
+    if (cur.first != SetStart && cur.first != SetStartNegate) {
         return false;
     }
+
     cur = getNextToken(file, false);
 
     if (!matchCItemList()) {
@@ -67,12 +64,7 @@ bool Parser::matchClassStmt() {
 
     //cur = getNextToken(file, false);
 
-    if (peekNextToken(false).first != SetEnd && peekNextToken(false).first != DashSetEnd) {
-        return false;
-    }
-
-    cur = getNextToken(file, false);
-    return true;
+    return (cur.first == SetEnd || cur.first == DashSetEnd);
 }
 
 bool Parser::matchCItemList() {
@@ -85,20 +77,15 @@ bool Parser::matchCItemList() {
 }
 
 bool Parser::matchCItem() {
-    if (peekNextToken(false).first != Character) {
+    if (cur.first != Character) {
         return false;
     }
+
     cur = getNextToken(file, false);
 
-    if (peekNextToken(false).first == Dash) {
+    if (cur.first == Dash) {
         cur = getNextToken(file, false);
-
-        if (peekNextToken(false).first != Character) {
-            return false;
-        }
-
-        cur = getNextToken(file, false);
-        return true;
+        return cur.first == Character;
     }
     else {
         return true;
@@ -106,54 +93,53 @@ bool Parser::matchCItem() {
 }
 
 bool Parser::matchTokenStmt() {
-    if (peekNextToken(true).first != Token) {
+    if (cur.first != Token) {
         return false;
     }
+
     cur = getNextToken(file, true);
 
-    if (peekNextToken(true).first != Id) {
+    if (cur.first != Id) {
         return false;
     }
-    cur = getNextToken(file, true);
 
-    if (peekNextToken(false).first != Slash) {
+    cur = getNextToken(file, false);
+
+    if (cur.first != Slash) {
         return false;
     }
+
     cur = getNextToken(file, false);
 
     if (!matchRegex()) {
         return false;
     }
 
-    if (peekNextToken(false).first != Slash) {
-        return false;
-    }
     cur = getNextToken(file, false);
 
-    return true;
+    return cur.first == Slash;
 }
 
 bool Parser::matchIgnoreStmt(){
-    if (peekNextToken(true).first != Ignore) {
+    if (cur.first != Ignore) {
         return false;
     }
-    cur = getNextToken(file, true);
 
-    if (peekNextToken(false).first != Slash) {
+    cur = getNextToken(file, false);
+
+    if (cur.first != Slash) {
         return false;
     }
+
     cur = getNextToken(file, false);
 
     if (!matchRegex()) {
         return false;
     }
 
-    if (peekNextToken(false).first != Slash) {
-        return false;
-    }
     cur = getNextToken(file, false);
 
-    return true;
+    return cur.first == Slash;
 }
 
 bool Parser::matchRegex() {
@@ -181,46 +167,31 @@ bool Parser::matchRClosure() {
         return false;
     }
 
-    if (peekNextToken(false).first == Star || peekNextToken(false).first == Plus || peekNextToken(false).first == Question) {
+    cur = getNextToken(file, false);
+    /*if (cur.first == Star || cur.first == Plus || cur.first == Question) {
         cur = getNextToken(file, false);
-    }
-
+    }*/
     return true;
 }
 
 bool Parser::matchRFactor() {
-    if (peekNextToken(false).first == Character) {
-        cur = getNextToken(file, false);
+    if (cur.first == Character) {
         return true;
     }
-    else if (peekNextToken(false).first == SetStart) {
-        cur = getNextToken(file, false);
-
-        if (peekNextToken(true).first != Id) {
-            return false;
-        }
+    else if (cur.first == SetStart) {
         cur = getNextToken(file, true);
-
-        if (peekNextToken(false).first != SetEnd) {
+        if (cur.first != Id) {
             return false;
         }
         cur = getNextToken(file, false);
-
-        return true;
+        return cur.first == SetEnd;
     }
-    else if (peekNextToken(false).first == OpenParen) {
+    else if (cur.first == OpenParen) {
         cur = getNextToken(file, false);
-
         if (!matchRegex()) {
             return false;
         }
-
-        if (peekNextToken(false).first != CloseParen) {
-            return false;
-        }
-        cur = getNextToken(file, false);
-
-        return true;
+        return cur.first == CloseParen;
     }
     else {
         return false;

@@ -1,2 +1,3 @@
-class _Digit [^a-f-]fwefw
-class hello [a-d]$
+token hello /a*/
+class nani [a-z]
+ignore /h+/

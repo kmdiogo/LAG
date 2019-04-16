@@ -22,6 +22,15 @@ pair<Tokens, string> getNextToken(ifstream &file, bool aggregrate) {
             else if (cur == ']') {
                 return make_pair(SetEnd, "]");
             }
+            else if (cur == '(') {
+                return make_pair(OpenParen, "(");
+            }
+            else if (cur == ')') {
+                return make_pair(CloseParen, ")");
+            }
+            else if (cur == '/') {
+                return make_pair(Slash, "/");
+            }
             else if (cur == '*') {
                 return make_pair(Star, "*");
             }
@@ -42,7 +51,7 @@ pair<Tokens, string> getNextToken(ifstream &file, bool aggregrate) {
             }
         }
         else {
-            if ( (isalpha(cur) || cur == '_'))
+            if ( (isalnum(cur) || cur == '_'))
                 return getCTII(file, cur);
         }
     }
@@ -51,9 +60,18 @@ pair<Tokens, string> getNextToken(ifstream &file, bool aggregrate) {
 
 
 pair<Tokens, string> getCTII(ifstream &file, char cur) {
-    string temp;
+    char c;
+    string lexeme = "";
+    lexeme += cur;
+
+    while (isalnum(file.peek()) || file.peek() == '_') {
+        file >> c;
+        lexeme += c;
+    }
+
+    /*string temp;
     file >> temp;
-    string lexeme = cur + temp;
+    string lexeme = cur + temp;*/
     if (lexeme == "class")
         return make_pair(Class, lexeme);
     else if (lexeme == "token")
@@ -61,6 +79,10 @@ pair<Tokens, string> getCTII(ifstream &file, char cur) {
     else if (lexeme == "ignore")
         return make_pair(Ignore, lexeme);
     else {
+        if (!isalpha(lexeme[0]) && lexeme[0] != '_') {
+            cout << "Invalid identifier: " << lexeme << endl;
+            exit(0);
+        }
         for (int i=1; i < lexeme.length(); i++) {
             if (!isalpha(lexeme[i])) {
                 cout << "Invalid identifier: " << lexeme << endl;
@@ -69,5 +91,4 @@ pair<Tokens, string> getCTII(ifstream &file, char cur) {
         }
         return make_pair(Id, lexeme);
     }
-
 }

@@ -17,9 +17,10 @@ class Parser {
 public:
     void parse();
     Parser(string path) {
-        file.seekg(-1);
-        file.open(path);
-        //cur = getNextToken(file, true);
+        // TODO: Verify openining in binary mode or disabling buffering is legit
+
+        //file.rdbuf()->pubsetbuf(nullptr, 0);
+        file.open(path, ios::binary);
     }
 
 private:
@@ -34,6 +35,8 @@ private:
     bool matchRTerm();
     bool matchRClosure();
     bool matchRFactor();
+
+    pair<Tokens, string> peekNextToken(bool aggregrate);
 
     pair<Tokens, string> cur;
     ifstream file;
