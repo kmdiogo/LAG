@@ -7,7 +7,7 @@ string TokensStr[] = {"Class", "Token", "Id", "Ignore",
                       "Character", "Dash", "Star", "Plus", "Question", "EOI"};
 
 void printPair(pair<Tokens, string> p) {
-    cout << TokensStr[p.first] << ' ' << p.second << endl;
+    cout << "( " << TokensStr[p.first] << ", " << p.second << " )" << endl;
 }
 
 void printError(pair<Tokens, string> p, string msg) {

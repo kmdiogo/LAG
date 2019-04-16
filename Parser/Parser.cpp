@@ -18,8 +18,15 @@ pair<Tokens, string> Parser::peekNextToken(bool aggregrate) {
 void Parser::parse() {
     if (matchStmtList())
         cout << "Parse Successful" << endl;
-    else
+    else {
         cout << "Parse Unsuccessful" << endl;
+        cout << "Current Token: ";
+        printPair(cur);
+
+        cout << "Lookahead Token: ";
+        printPair(peekNextToken(false));
+    }
+
 }
 
 bool Parser::matchStmtList(){

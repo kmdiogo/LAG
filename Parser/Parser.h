@@ -16,11 +16,15 @@ using namespace std;
 class Parser {
 public:
     void parse();
-    Parser(string path) {
+    explicit Parser(const string &inputFilePath) {
         // TODO: Verify openining in binary mode or disabling buffering is legit
 
         //file.rdbuf()->pubsetbuf(nullptr, 0);
-        file.open(path, ios::binary);
+        file.open(inputFilePath, ios::binary);
+        if (!file) {
+            cout << "Unable to open file" << endl;
+            exit(0);
+        }
     }
 
 private:
