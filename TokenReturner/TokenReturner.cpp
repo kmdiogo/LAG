@@ -43,8 +43,8 @@ pair<Tokens, string> getNextToken(ifstream &file, bool aggregrate) {
             else if (cur == '-') {
                 return make_pair(Dash, string() + cur);
             }
-            else if (cur == '$') {
-                return make_pair(EOI, "$");
+            else if (cur == '|') {
+                return make_pair(Pipe, "|");
             }
             else {
                 return make_pair(Character, string() + cur);

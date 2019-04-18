@@ -1,3 +1,1 @@
-token hello /a*/
-class nani [a-z]
-ignore /h+/
+token hello /(a|b)*/

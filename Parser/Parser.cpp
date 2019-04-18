@@ -164,11 +164,36 @@ bool Parser::matchIgnoreStmt(){
 }
 
 bool Parser::matchRegex() {
+    /*if (!matchRTerm()) {
+        return false;
+    }
+
+    if (peekNextToken(false).first != Pipe) {
+        return false;
+    }
+    cur = getNextToken(file, false);
+
+    while (matchRTerm());
+
+    return true;*/
+
     if (!matchRTerm()) {
         return false;
     }
 
-    while (matchRTerm());
+    return matchRegexPrime();
+}
+
+bool Parser::matchRegexPrime() {
+    if (peekNextToken(false).first == Pipe) {
+        cur = getNextToken(file, false);
+
+        if (!matchRTerm()) {
+            return false;
+        }
+
+        return matchRegexPrime();
+    }
 
     return true;
 }
