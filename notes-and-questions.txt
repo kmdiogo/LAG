@@ -8,3 +8,11 @@ How do I handle for example: stmtList -> stmt stmtList
 
 use vector of triples to represent parse tree
 (node, left, right) left and right are indexes to the node
+
+
+make enumeration for Regex Node Type
+-can be a single character, class, concat node, selection node, star node, question node, or node
+- two integers: if base case: represents character or class.
+
+to help with NFA:
+- add first NFA nodes, last NFA Nodes to tree
