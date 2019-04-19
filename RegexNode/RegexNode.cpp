@@ -7,7 +7,7 @@ string nodeStr[] = {"ConcatNode", "CharacterNode", "IdNode", "PlusNode", "Questi
 
 void RegexNode::printNode() {
     cout << "Index: " << index << endl;
-    cout << "Type: " << nodeStr[nodeType] << endl;
+    cout << "Type: " << nodeStr[type] << endl;
     cout << "Left: [" << left << "]" << endl;
     cout << "Right: [" << right << "]" << endl;
     cout << "Value: " << value << endl << endl;

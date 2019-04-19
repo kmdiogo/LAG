@@ -22,7 +22,7 @@ NFA::NFA(vector<vector<RegexNode>> parseTrees) {
     vector<RegexNode> tree = parseTrees[0];
     curNode = tree.back();
 
-    if (tree.back().nodeType == StarNode) {
+    if (tree.back().type == StarNode) {
         nodes.emplace_back(NFANode());
         nodes.emplace_back(NFANode());
         nodes.emplace_back(NFANode());
@@ -37,7 +37,7 @@ NFA::NFA(vector<vector<RegexNode>> parseTrees) {
 }
 
 void NFA::processNode(RegexNode node){
-    switch(node.nodeType) {
+    switch(node.type) {
         case StarNode:
             break;
         case UnionNode:

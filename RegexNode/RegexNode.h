@@ -15,19 +15,19 @@ enum NodeType {
 class RegexNode {
 public:
     explicit RegexNode(NodeType nt, string v="") {
-        nodeType = nt;
-        left = -1;
-        right = -1;
+        firstNFA = lastNFA = left = right = index = -1;
+        type = nt;
         value = v;
-        index = -1;
     }
     RegexNode() {}
     void printNode();
 
-    NodeType nodeType;
+    NodeType type;
     int left;
     int right;
     int index;
+    int firstNFA;
+    int lastNFA;
     string value;
 };
 

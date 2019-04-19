@@ -15,8 +15,9 @@ int main() {
     Parser p = Parser(PATH);
     p.parse();
     vector<vector<RegexNode>> regexTrees = p.getParseTrees();
+    p.printParseTrees();
     NFA n = NFA(regexTrees);
-    n.printNFA();
+    //n.printNFA();
     return 0;
 }
 
