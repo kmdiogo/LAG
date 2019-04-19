@@ -7,35 +7,27 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "../utils/utils.h"
 #include "../TokenReturner/TokenReturner.h"
-#include <vector>
-using namespace std;
+#include "../RegexNode/RegexNode.h"
 
-enum NodeType {
-    Concat, Atom, PlusClosure, QuestionClosure, StarClosure
-};
-struct RegexNode {
-    NodeType nodeType;
-    int left;
-    int right;
-};
+using namespace std;
 
 class Parser {
 public:
     void parse();
     explicit Parser(const string &inputFilePath) {
-        // TODO: Verify openining in binary mode or disabling buffering is legit
-        //file.rdbuf()->pubsetbuf(nullptr, 0);
-
+        // Opening in binary mode necessary for input stream backtrack
         file.open(inputFilePath, ios::binary);
         if (!file) {
-            cout << "Unable to open file" << endl;
+            cout << "Unable to open file: " << inputFilePath << endl;
             exit(0);
         }
     }
 
 private:
+    // Grammar rule subroutines
     bool matchStmtList();
     bool matchStmt();
     bool matchClassStmt();
@@ -44,14 +36,18 @@ private:
     bool matchTokenStmt();
     bool matchIgnoreStmt();
     bool matchRegex();
-    bool matchRegexPrime();
     bool matchRTerm();
     bool matchRClosure();
     bool matchRFactor();
-    pair<Tokens, string> peekNextToken(bool aggregrate);
 
-    pair<Tokens, string> cur;
+    // Other Methods
+    pair<Tokens, string> peekNextToken(bool aggregrate);    // Calls getNextToken() from TokenReturner but backtracks after done
+    void printParseTree();  // Debug function to view all parse trees
+
+    // Attributes
     ifstream file;
+    pair<Tokens, string> cur;
+    vector< vector<RegexNode> > parseTree;
 };
 
 

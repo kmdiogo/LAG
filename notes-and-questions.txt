@@ -11,7 +11,7 @@ use vector of triples to represent parse tree
 
 
 make enumeration for Regex Node Type
--can be a single character, class, concat node, selection node, star node, question node, or node
+-can be a single character, class, concat node, selection node, star node, question node, or union node
 - two integers: if base case: represents character or class.
 
 to help with NFA:

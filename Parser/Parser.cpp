@@ -5,6 +5,7 @@
 #include "Parser.h"
 // TODO: Build parse tree
 
+RegexNode lastNode;
 
 pair<Tokens, string> Parser::peekNextToken(bool aggregrate) {
     int startPos = file.tellg();
@@ -13,6 +14,15 @@ pair<Tokens, string> Parser::peekNextToken(bool aggregrate) {
     file.seekg(startPos, file.beg);
 
     return p;
+}
+
+void Parser::printParseTree() {
+    for (int i =0; i < parseTree.size(); i++) {
+        cout << "------- Parse Tree " << i << " ---------" << endl;
+        for (auto & j : parseTree[i]) {
+            j.printNode();
+        }
+    }
 }
 
 void Parser::parse() {
@@ -26,7 +36,7 @@ void Parser::parse() {
         cout << "Lookahead Token: ";
         printPair(peekNextToken(false));
     }
-
+    printParseTree();
 }
 
 bool Parser::matchStmtList(){
@@ -128,6 +138,7 @@ bool Parser::matchTokenStmt() {
     }
     cur = getNextToken(file, false);
 
+    parseTree.emplace_back(vector<RegexNode>());
     if (!matchRegex()) {
         return false;
     }
@@ -151,6 +162,7 @@ bool Parser::matchIgnoreStmt(){
     }
     cur = getNextToken(file, false);
 
+    parseTree.emplace_back(vector<RegexNode>());
     if (!matchRegex()) {
         return false;
     }
@@ -164,35 +176,23 @@ bool Parser::matchIgnoreStmt(){
 }
 
 bool Parser::matchRegex() {
-    /*if (!matchRTerm()) {
-        return false;
-    }
-
-    if (peekNextToken(false).first != Pipe) {
-        return false;
-    }
-    cur = getNextToken(file, false);
-
-    while (matchRTerm());
-
-    return true;*/
-
     if (!matchRTerm()) {
         return false;
     }
 
-    return matchRegexPrime();
-}
+    while (peekNextToken(false).first == Pipe) {
+        RegexNode node = RegexNode(UnionNode);
+        node.left = lastNode.index;
 
-bool Parser::matchRegexPrime() {
-    if (peekNextToken(false).first == Pipe) {
         cur = getNextToken(file, false);
-
         if (!matchRTerm()) {
             return false;
         }
 
-        return matchRegexPrime();
+        node.right = lastNode.index;
+        node.index = parseTree.back().size();
+        parseTree.back().emplace_back(node);
+        lastNode = node;
     }
 
     return true;
@@ -202,8 +202,17 @@ bool Parser::matchRTerm() {
     if (!matchRClosure()) {
         return false;
     }
+    RegexNode leftNode = lastNode;
 
-    while(matchRClosure());
+    while(matchRClosure()) {
+        RegexNode node = RegexNode(ConcatNode);
+        node.index = parseTree.back().size();
+        node.left = leftNode.index;
+        node.right = lastNode.index;
+        parseTree.back().emplace_back(node);
+        lastNode = node;
+        leftNode = lastNode;
+    }
 
     return true;
 }
@@ -213,8 +222,29 @@ bool Parser::matchRClosure() {
         return false;
     }
 
-    if (peekNextToken(false).first == Star || peekNextToken(false).first == Plus || peekNextToken(false).first == Question) {
+    if (peekNextToken(false).first == Star) {
         cur = getNextToken(file, false);
+        RegexNode node = RegexNode(StarNode);
+        node.index = parseTree.back().size();
+        node.left = lastNode.index;
+        parseTree.back().emplace_back(node);
+        lastNode = node;
+    }
+    else if (peekNextToken(false).first == Plus) {
+        cur = getNextToken(file, false);
+        RegexNode node = RegexNode(PlusNode);
+        node.index = parseTree.back().size();
+        node.left = lastNode.index;
+        parseTree.back().emplace_back(node);
+        lastNode = node;
+    }
+    else if (peekNextToken(false).first == Question) {
+        cur = getNextToken(file, false);
+        RegexNode node = RegexNode(QuestionNode);
+        node.index = parseTree.back().size();
+        node.left = lastNode.index;
+        parseTree.back().emplace_back(node);
+        lastNode = node;
     }
 
     return true;
@@ -223,6 +253,11 @@ bool Parser::matchRClosure() {
 bool Parser::matchRFactor() {
     if (peekNextToken(false).first == Character) {
         cur = getNextToken(file, false);
+
+        lastNode = RegexNode(CharacterNode, cur.second);
+        lastNode.index = parseTree.back().size();
+        parseTree.back().emplace_back(lastNode);
+
         return true;
     }
     else if (peekNextToken(false).first == SetStart) {
@@ -232,6 +267,10 @@ bool Parser::matchRFactor() {
             return false;
         }
         cur = getNextToken(file, true);
+
+        lastNode = RegexNode(IdNode, cur.second);
+        lastNode.index = parseTree.back().size();
+        parseTree.back().emplace_back(lastNode);
 
         if (peekNextToken(false).first != SetEnd) {
             return false;

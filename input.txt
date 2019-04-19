@@ -1,1 +1,2 @@
-token hello /(a|b)*/
+token hello /(a|b)*abb/
+token goodbye /(a*b*c*)+/
