@@ -3,4 +3,4 @@ project(LAG)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(LAG main.cpp utils/utils.cpp utils/utils.h TokenReturner/TokenReturner.cpp TokenReturner/TokenReturner.h Parser/Parser.cpp Parser/Parser.h RegexNode/RegexNode.cpp RegexNode/RegexNode.h)
+add_executable(LAG main.cpp utils/utils.cpp utils/utils.h TokenReturner/TokenReturner.cpp TokenReturner/TokenReturner.h Parser/Parser.cpp Parser/Parser.h RegexNode/RegexNode.cpp RegexNode/RegexNode.h NFA/NFA.cpp NFA/NFA.h)

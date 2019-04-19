@@ -1,9 +1,12 @@
 #include <iostream>
 #include <fstream>
+#include <windows.h>
+
 #include "TokenReturner/TokenReturner.h"
 #include "Parser/Parser.h"
 #include "utils/utils.h"
-#include <windows.h>
+#include "NFA/NFA.h"
+
 
 #define PATH "../input.txt"
 using namespace std;
@@ -11,6 +14,9 @@ using namespace std;
 int main() {
     Parser p = Parser(PATH);
     p.parse();
+    vector<vector<RegexNode>> regexTrees = p.getParseTrees();
+    NFA n = NFA(regexTrees);
+    n.printNFA();
     return 0;
 }
 

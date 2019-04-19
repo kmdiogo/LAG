@@ -17,6 +17,8 @@ using namespace std;
 class Parser {
 public:
     void parse();
+    void printParseTrees();  // Debug function to view all parse trees
+    vector<vector<RegexNode>> getParseTrees() {return parseTrees;}
     explicit Parser(const string &inputFilePath) {
         // Opening in binary mode necessary for input stream backtrack
         file.open(inputFilePath, ios::binary);
@@ -42,12 +44,11 @@ private:
 
     // Other Methods
     pair<Tokens, string> peekNextToken(bool aggregrate);    // Calls getNextToken() from TokenReturner but backtracks after done
-    void printParseTree();  // Debug function to view all parse trees
 
     // Attributes
     ifstream file;
     pair<Tokens, string> cur;
-    vector< vector<RegexNode> > parseTree;
+    vector< vector<RegexNode> > parseTrees;
 };
 
 

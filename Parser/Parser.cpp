@@ -16,10 +16,10 @@ pair<Tokens, string> Parser::peekNextToken(bool aggregrate) {
     return p;
 }
 
-void Parser::printParseTree() {
-    for (int i =0; i < parseTree.size(); i++) {
+void Parser::printParseTrees() {
+    for (int i =0; i < parseTrees.size(); i++) {
         cout << "------- Parse Tree " << i << " ---------" << endl;
-        for (auto & j : parseTree[i]) {
+        for (auto & j : parseTrees[i]) {
             j.printNode();
         }
     }
@@ -36,7 +36,6 @@ void Parser::parse() {
         cout << "Lookahead Token: ";
         printPair(peekNextToken(false));
     }
-    printParseTree();
 }
 
 bool Parser::matchStmtList(){
@@ -138,7 +137,7 @@ bool Parser::matchTokenStmt() {
     }
     cur = getNextToken(file, false);
 
-    parseTree.emplace_back(vector<RegexNode>());
+    parseTrees.emplace_back(vector<RegexNode>());
     if (!matchRegex()) {
         return false;
     }
@@ -162,7 +161,7 @@ bool Parser::matchIgnoreStmt(){
     }
     cur = getNextToken(file, false);
 
-    parseTree.emplace_back(vector<RegexNode>());
+    parseTrees.emplace_back(vector<RegexNode>());
     if (!matchRegex()) {
         return false;
     }
@@ -190,8 +189,8 @@ bool Parser::matchRegex() {
         }
 
         node.right = lastNode.index;
-        node.index = parseTree.back().size();
-        parseTree.back().emplace_back(node);
+        node.index = parseTrees.back().size();
+        parseTrees.back().emplace_back(node);
         lastNode = node;
     }
 
@@ -206,10 +205,10 @@ bool Parser::matchRTerm() {
 
     while(matchRClosure()) {
         RegexNode node = RegexNode(ConcatNode);
-        node.index = parseTree.back().size();
+        node.index = parseTrees.back().size();
         node.left = leftNode.index;
         node.right = lastNode.index;
-        parseTree.back().emplace_back(node);
+        parseTrees.back().emplace_back(node);
         lastNode = node;
         leftNode = lastNode;
     }
@@ -225,25 +224,25 @@ bool Parser::matchRClosure() {
     if (peekNextToken(false).first == Star) {
         cur = getNextToken(file, false);
         RegexNode node = RegexNode(StarNode);
-        node.index = parseTree.back().size();
+        node.index = parseTrees.back().size();
         node.left = lastNode.index;
-        parseTree.back().emplace_back(node);
+        parseTrees.back().emplace_back(node);
         lastNode = node;
     }
     else if (peekNextToken(false).first == Plus) {
         cur = getNextToken(file, false);
         RegexNode node = RegexNode(PlusNode);
-        node.index = parseTree.back().size();
+        node.index = parseTrees.back().size();
         node.left = lastNode.index;
-        parseTree.back().emplace_back(node);
+        parseTrees.back().emplace_back(node);
         lastNode = node;
     }
     else if (peekNextToken(false).first == Question) {
         cur = getNextToken(file, false);
         RegexNode node = RegexNode(QuestionNode);
-        node.index = parseTree.back().size();
+        node.index = parseTrees.back().size();
         node.left = lastNode.index;
-        parseTree.back().emplace_back(node);
+        parseTrees.back().emplace_back(node);
         lastNode = node;
     }
 
@@ -255,8 +254,8 @@ bool Parser::matchRFactor() {
         cur = getNextToken(file, false);
 
         lastNode = RegexNode(CharacterNode, cur.second);
-        lastNode.index = parseTree.back().size();
-        parseTree.back().emplace_back(lastNode);
+        lastNode.index = parseTrees.back().size();
+        parseTrees.back().emplace_back(lastNode);
 
         return true;
     }
@@ -269,8 +268,8 @@ bool Parser::matchRFactor() {
         cur = getNextToken(file, true);
 
         lastNode = RegexNode(IdNode, cur.second);
-        lastNode.index = parseTree.back().size();
-        parseTree.back().emplace_back(lastNode);
+        lastNode.index = parseTrees.back().size();
+        parseTrees.back().emplace_back(lastNode);
 
         if (peekNextToken(false).first != SetEnd) {
             return false;
