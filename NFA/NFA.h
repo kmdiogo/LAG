@@ -12,9 +12,9 @@ using namespace std;
 
 class edge {
 public:
-    edge(int tn, string tc) {
-        transNode = tn;
-        transChar = tc;
+    edge(int transNode, string transChar) {
+        this->transNode = transNode;
+        this->transChar = transChar;
     }
     int transNode;
     string transChar;
@@ -22,6 +22,7 @@ public:
 
 class NFANode {
 public:
+    bool isNull=false;
     vector<edge> edges;
 };
 
@@ -30,15 +31,14 @@ public:
     void printNFA();
     NFA(vector< vector<RegexNode> > parseTrees);
 private:
-    void getNextParseNode();
-    void processNode(RegexNode node);
-    void addUnion(int start, int end);
-    void addStarClosure(int start, int end);
-    void addCharacter(int start, int end);
+    void processNode(RegexNode& node);
+    void addUnion(RegexNode& node);
+    void addStarClosure(RegexNode& node);
+    void addCharacter(RegexNode& node);
+    void addConcat(RegexNode& node);
 
     vector<vector<RegexNode>> parseTrees;
     vector<NFANode> nodes;
-    RegexNode curNode;
 
 };
 

@@ -10,5 +10,7 @@ void RegexNode::printNode() {
     cout << "Type: " << nodeStr[type] << endl;
     cout << "Left: [" << left << "]" << endl;
     cout << "Right: [" << right << "]" << endl;
-    cout << "Value: " << value << endl << endl;
+    cout << "Value: " << value << endl;
+    cout << "First NFA Node: (" << firstNFA << ")" << endl;
+    cout << "Last NFA Node: (" << lastNFA << ")" << endl << endl;
 }
