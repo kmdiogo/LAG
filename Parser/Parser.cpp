@@ -6,6 +6,7 @@
 // TODO: Build parse tree
 
 RegexNode lastNode;
+string currentClass;
 
 pair<Tokens, string> Parser::peekNextToken(bool aggregrate) {
     int startPos = file.tellg();
@@ -25,6 +26,17 @@ void Parser::printParseTrees() {
     }
 }
 
+void Parser::handleCharRange(char begin, char end, vector<char> & classChars) {
+    if (begin > end) {
+        cout << "Given character range: [" << begin << " - " << end << "] is invalid" << endl;
+        exit(0);
+    }
+    for (int i=begin; i <= end; i++) {
+        classChars.emplace_back(char(i));
+    }
+}
+
+
 void Parser::parse() {
     if (matchStmtList())
         cout << "Parse Successful" << endl;
@@ -35,6 +47,7 @@ void Parser::parse() {
 
         cout << "Lookahead Token: ";
         printPair(peekNextToken(false));
+        exit(0);
     }
 }
 
@@ -71,6 +84,8 @@ bool Parser::matchClassStmt() {
         return false;
     }
     cur = getNextToken(file, true);
+    currentClass = cur.second;
+    classLookupTable[currentClass] = vector<char>();
 
     if (peekNextToken(false).first != SetStart && peekNextToken(false).first != SetStartNegate) {
         return false;
@@ -107,6 +122,9 @@ bool Parser::matchCItem() {
     cur = getNextToken(file, false);
 
     if (peekNextToken(false).first == Dash) {
+        // Save the first character in the range
+        char begin = cur.second[0];
+
         cur = getNextToken(file, false);
 
         if (peekNextToken(false).first != Character) {
@@ -114,9 +132,15 @@ bool Parser::matchCItem() {
         }
 
         cur = getNextToken(file, false);
+
+        // Save the last character in the range
+        char end = cur.second[0];
+
+        handleCharRange(begin, end, classLookupTable[currentClass]);
         return true;
     }
     else {
+        classLookupTable[currentClass].emplace_back(cur.second[0]);
         return true;
     }
 }

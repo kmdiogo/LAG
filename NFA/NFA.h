@@ -7,38 +7,41 @@
 
 #include <vector>
 #include <string>
+#include <map>
 #include "../RegexNode/RegexNode.h"
 using namespace std;
 
 class edge {
 public:
-    edge(int transNode, string transChar) {
+    edge(int transNode, vector<char> transChars) {
         this->transNode = transNode;
-        this->transChar = transChar;
+        this->transChars = transChars;
     }
     int transNode;
-    string transChar;
+    vector<char> transChars;
 };
 
 class NFANode {
 public:
-    bool isNull=false;
     vector<edge> edges;
+    bool isAccepting = false;
 };
 
 class NFA {
 public:
     void printNFA();
-    NFA(vector< vector<RegexNode> > parseTrees);
+    NFA(vector< vector<RegexNode> > parseTrees, map<string, vector<char>> classLookupTable);
 private:
-    void processNode(RegexNode& node);
-    void addUnion(RegexNode& node);
-    void addStarClosure(RegexNode& node);
-    void addCharacter(RegexNode& node);
-    void addConcat(RegexNode& node);
+    void processNode(RegexNode &node, int treeNumber);
+    void addUnion(RegexNode &node, int treeNumber);
+    void addStarClosure(RegexNode &node, int treeNumber);
+    void addCharacter(RegexNode &node, int treeNumber);
+    void addConcat(RegexNode &node, int treeNumber);
+    void addId(RegexNode &node, int treeNumber);
 
     vector<vector<RegexNode>> parseTrees;
-    vector<NFANode> nodes;
+    vector<NFANode> nfaNodes;
+    map<string, vector<char>> classLookupTable;
 
 };
 

@@ -15,5 +15,5 @@ make enumeration for Regex Node Type
 - two integers: if base case: represents character or class.
 
 to help with NFA:
-- add first NFA nodes, last NFA Nodes to tree
+- add first NFA nfaNodes, last NFA Nodes to tree
 - remember first and last as you post-order traverse the tree (left-right-root)

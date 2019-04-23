@@ -1,1 +1,4 @@
-token hello /(a|b)*(a|b)*/
+class alpha [a-z]
+token hello /ab/
+token goodbye /cd/
+token hey /[alpha]/

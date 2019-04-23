@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <map>
 #include "../utils/utils.h"
 #include "../TokenReturner/TokenReturner.h"
 #include "../RegexNode/RegexNode.h"
@@ -19,6 +20,7 @@ public:
     void parse();
     void printParseTrees();  // Debug function to view all parse trees
     vector<vector<RegexNode>> getParseTrees() {return parseTrees;}
+    map<string, vector<char>> getLookupTable() {return classLookupTable;}
     explicit Parser(const string &inputFilePath) {
         // Opening in binary mode necessary for input stream backtrack
         file.open(inputFilePath, ios::binary);
@@ -41,6 +43,7 @@ private:
     bool matchRTerm();
     bool matchRClosure();
     bool matchRFactor();
+    void handleCharRange(char lower, char upper, vector<char> & classChars);
 
     // Other Methods
     pair<Tokens, string> peekNextToken(bool aggregrate);    // Calls getNextToken() from TokenReturner but backtracks after done
@@ -49,6 +52,7 @@ private:
     ifstream file;
     pair<Tokens, string> cur;
     vector< vector<RegexNode> > parseTrees;
+    map<string, vector<char>> classLookupTable;
 };
 
 

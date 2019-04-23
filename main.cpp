@@ -14,10 +14,14 @@ using namespace std;
 int main() {
     Parser p = Parser(PATH);
     p.parse();
+
     vector<vector<RegexNode>> regexTrees = p.getParseTrees();
+    map<string, vector<char>> classLookupTable = p.getLookupTable();
     //p.printParseTrees();
-    NFA n = NFA(regexTrees);
+
+    NFA n = NFA(regexTrees, classLookupTable);
     n.printNFA();
+
     return 0;
 }
 
