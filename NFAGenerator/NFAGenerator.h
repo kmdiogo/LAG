@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <set>
 #include "../NFANode/NFANode.h"
 #include "../ParseTreeNode/ParseTreeNode.h"
 using namespace std;
@@ -15,7 +16,9 @@ using namespace std;
 class NFAGenerator {
 public:
     void printNFA();
+    void printInputs();
     vector<NFANode> getNFA() {return NFA;}
+    set<vector<char>> getInputs() {return inputs;}
     NFAGenerator(vector< vector<ParseTreeNode> > parseTrees, map<string, vector<char>> classLookupTable);
 private:
     void processNode(ParseTreeNode &node, int treeNumber);
@@ -27,6 +30,7 @@ private:
 
     vector<vector<ParseTreeNode>> parseTrees;
     vector<NFANode> NFA;
+    set<vector<char>> inputs;
     map<string, vector<char>> classLookupTable;
 
 };

@@ -6,6 +6,10 @@
 #include "Parser/Parser.h"
 #include "utils/utils.h"
 #include "NFAGenerator/NFAGenerator.h"
+#include "DFAGenerator/DFAGenerator.h"
+
+#include <map>
+#include <vector>
 
 
 #define PATH "../input.txt"
@@ -17,6 +21,10 @@ int main() {
 
     NFAGenerator nfaGen = NFAGenerator(p.getParseTrees(), p.getLookupTable());
     nfaGen.printNFA();
+    //nfaGen.printInputs();
+
+    DFAGenerator dfaGen = DFAGenerator(nfaGen.getNFA(), nfaGen.getInputs());
+
 
     return 0;
 }

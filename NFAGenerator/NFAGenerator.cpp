@@ -20,6 +20,18 @@ void NFAGenerator::printNFA() {
     }
 }
 
+void NFAGenerator::printInputs() {
+    int i =0;
+    for (auto & input : inputs) {
+        cout << "Input " << i << ": ";
+        for (auto & ch : input) {
+            cout << ch << " ";
+        }
+        cout << endl;
+        i++;
+    }
+}
+
 
 NFAGenerator::NFAGenerator(vector<vector<ParseTreeNode>> parseTrees, map<string, vector<char>> classLookupTable) {
     this->parseTrees = parseTrees;
@@ -124,6 +136,10 @@ void NFAGenerator::addCharacter(ParseTreeNode &node, int treeNumber) {
 
 
     NFA[node.firstNFA].edges.emplace_back( edge(node.lastNFA, vector<char>{node.value[0]}) );
+
+    if (inputs.find(vector<char>{node.value[0]}) == inputs.end()) {
+        inputs.insert(vector<char>{node.value[0]});
+    }
 }
 
 void NFAGenerator::addId(ParseTreeNode &node, int treeNumber) {
@@ -134,6 +150,10 @@ void NFAGenerator::addId(ParseTreeNode &node, int treeNumber) {
     NFA.emplace_back(NFANode());
 
     NFA[node.firstNFA].edges.emplace_back( edge(node.lastNFA, classLookupTable[node.value]) );
+
+    if (inputs.find(classLookupTable[node.value]) == inputs.end()) {
+        inputs.insert(classLookupTable[node.value]);
+    }
 }
 
 void NFAGenerator::addConcat(ParseTreeNode &node, int treeNumber) {
