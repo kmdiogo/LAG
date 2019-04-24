@@ -2,8 +2,8 @@
 // Created by Kenny on 4/18/2019.
 //
 
-#ifndef LAG_REGEXNODE_H
-#define LAG_REGEXNODE_H
+#ifndef LAG_PARSETREENODE_H
+#define LAG_PARSETREENODE_H
 
 #include <iostream>
 using namespace std;
@@ -12,14 +12,14 @@ enum NodeType {
     ConcatNode, CharacterNode, IdNode, PlusNode, QuestionNode, StarNode, UnionNode
 };
 
-class RegexNode {
+class ParseTreeNode {
 public:
-    explicit RegexNode(NodeType nt, string v="") {
+    explicit ParseTreeNode(NodeType nt, string v="") {
         firstNFA = lastNFA = left = right = index = -1;
         type = nt;
         value = v;
     }
-    RegexNode() {}
+    ParseTreeNode() = default;
     void printNode();
 
     NodeType type;
@@ -32,4 +32,4 @@ public:
 };
 
 
-#endif //LAG_REGEXNODE_H
+#endif //LAG_PARSETREENODE_H

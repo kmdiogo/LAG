@@ -11,7 +11,7 @@
 #include <map>
 #include "../utils/utils.h"
 #include "../TokenReturner/TokenReturner.h"
-#include "../RegexNode/RegexNode.h"
+#include "../ParseTreeNode/ParseTreeNode.h"
 
 using namespace std;
 
@@ -19,7 +19,7 @@ class Parser {
 public:
     void parse();
     void printParseTrees();  // Debug function to view all parse trees
-    vector<vector<RegexNode>> getParseTrees() {return parseTrees;}
+    vector<vector<ParseTreeNode>> getParseTrees() {return parseTrees;}
     map<string, vector<char>> getLookupTable() {return classLookupTable;}
     explicit Parser(const string &inputFilePath) {
         // Opening in binary mode necessary for input stream backtrack
@@ -51,7 +51,7 @@ private:
     // Attributes
     ifstream file;
     pair<Tokens, string> cur;
-    vector< vector<RegexNode> > parseTrees;
+    vector< vector<ParseTreeNode> > parseTrees;
     map<string, vector<char>> classLookupTable;
 };
 

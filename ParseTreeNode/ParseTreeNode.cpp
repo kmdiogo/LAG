@@ -2,15 +2,15 @@
 // Created by Kenny on 4/18/2019.
 //
 
-#include "RegexNode.h"
+#include "ParseTreeNode.h"
 string nodeStr[] = {"ConcatNode", "CharacterNode", "IdNode", "PlusNode", "QuestionNode", "StarNode", "UnionNode"};
 
-void RegexNode::printNode() {
+void ParseTreeNode::printNode() {
     cout << "Index: " << index << endl;
     cout << "Type: " << nodeStr[type] << endl;
     cout << "Left: [" << left << "]" << endl;
     cout << "Right: [" << right << "]" << endl;
     cout << "Value: " << value << endl;
-    cout << "First NFA Node: (" << firstNFA << ")" << endl;
-    cout << "Last NFA Node: (" << lastNFA << ")" << endl << endl;
+    cout << "First NFAGenerator Node: (" << firstNFA << ")" << endl;
+    cout << "Last NFAGenerator Node: (" << lastNFA << ")" << endl << endl;
 }

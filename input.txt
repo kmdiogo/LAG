@@ -1,4 +1,3 @@
 class alpha [a-z]
-token alphaTest /[alpha]/
-token _hello5 /([alpha]*|b)/
+token alphaTest /[alpha]|b*/
 

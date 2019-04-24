@@ -5,7 +5,7 @@
 #include "TokenReturner/TokenReturner.h"
 #include "Parser/Parser.h"
 #include "utils/utils.h"
-#include "NFA/NFA.h"
+#include "NFAGenerator/NFAGenerator.h"
 
 
 #define PATH "../input.txt"
@@ -15,12 +15,8 @@ int main() {
     Parser p = Parser(PATH);
     p.parse();
 
-    vector<vector<RegexNode>> regexTrees = p.getParseTrees();
-    map<string, vector<char>> classLookupTable = p.getLookupTable();
-    //p.printParseTrees();
-
-    NFA n = NFA(regexTrees, classLookupTable);
-    n.printNFA();
+    NFAGenerator nfaGen = NFAGenerator(p.getParseTrees(), p.getLookupTable());
+    nfaGen.printNFA();
 
     return 0;
 }

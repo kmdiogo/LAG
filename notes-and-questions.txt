@@ -1,19 +1,21 @@
-
-
+--- TOKEN RETURNER ---
 [ or [^
 ] or -]
+----------------------
 
-How do I handle for example: stmtList -> stmt stmtList
+--- PARSER ---
+- How do I handle for example: stmtList -> stmt stmtList
 
-
-use vector of triples to represent parse tree
+- use vector of triples to represent parse tree
 (node, left, right) left and right are indexes to the node
 
-
-make enumeration for Regex Node Type
--can be a single character, class, concat node, selection node, star node, question node, or union node
+make enumeration for Parse Tree Node Type
+- can be a single character, class, concat node, selection node, star node, question node, or union node
 - two integers: if base case: represents character or class.
+--------------
 
+--- NFA ---
 to help with NFA:
-- add first NFA nfaNodes, last NFA Nodes to tree
+- add first NFA node and last NFA Node to each Parse Tree Node
 - remember first and last as you post-order traverse the tree (left-right-root)
+--------------
