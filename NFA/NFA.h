@@ -8,24 +8,9 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "../NFANode/NFANode.h"
 #include "../RegexNode/RegexNode.h"
 using namespace std;
-
-class edge {
-public:
-    edge(int transNode, vector<char> transChars) {
-        this->transNode = transNode;
-        this->transChars = transChars;
-    }
-    int transNode;
-    vector<char> transChars;
-};
-
-class NFANode {
-public:
-    vector<edge> edges;
-    bool isAccepting = false;
-};
 
 class NFA {
 public:

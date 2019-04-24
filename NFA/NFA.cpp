@@ -4,7 +4,9 @@
 
 #include "NFA.h"
 
-int first, last;
+/**
+ * Debug function that prints the NFA in a readable manner
+ */
 void NFA::printNFA() {
     for (int i = 0; i < nfaNodes.size(); i++) {
         cout << "----- Node " << i;
@@ -13,19 +15,8 @@ void NFA::printNFA() {
         }
         cout << " -----" << endl;
 
-        cout << "  Edges" << endl;
-        for (auto & edge : nfaNodes[i].edges) {
-            cout << "\tto: " << edge.transNode << " | " << "char(s): ";
-            if (edge.transChars.size() == 0)
-                cout << "epsilon" << endl;
-            else {
-                for (auto & ch : edge.transChars) {
-                    cout << ch << " ";
-                }
-                cout << endl;
-            }
-        }
-        cout << endl;
+        cout << "  ";
+        nfaNodes[i].printNode();
     }
 }
 
@@ -34,20 +25,35 @@ NFA::NFA(vector<vector<RegexNode>> parseTrees, map<string, vector<char>> classLo
     this->parseTrees = parseTrees;
     this->classLookupTable = classLookupTable;
 
+    // Add the starting node
+    nfaNodes.emplace_back(NFANode());
+
+
+    // Iterate through all parse trees and generate their corresponding NFA
     for (int i=0; i < this->parseTrees.size(); i++) {
-        processNode(parseTrees[i].back(), 0);
+        processNode(parseTrees[i].back(), i);
         nfaNodes[parseTrees[i].back().lastNFA].isAccepting = true;
+    }
+
+    // Add epsilon transitions for the generated regex NFAs (connects them together)
+    for (auto & tree: parseTrees) {
+        nfaNodes[0].edges.emplace_back( edge(tree.back().firstNFA, vector<char>()) );
     }
 
 
 }
 
+/**
+ * Recursive function for postorder traversal of a tree. Used to generate an NFA from a given parse tree using Thompson's construction
+ * @param node - the current processed node in the parse tree
+ * @param treeNumber - the index of the parse tree that it being processed
+ */
 void NFA::processNode(RegexNode &node, int treeNumber) {
     if (node.left != -1) {
-        processNode(parseTrees[treeNumber][node.left], 0);
+        processNode(parseTrees[treeNumber][node.left], treeNumber);
     }
     if (node.right != -1) {
-        processNode(parseTrees[treeNumber][node.right], 0);
+        processNode(parseTrees[treeNumber][node.right], treeNumber);
     }
 
     switch(node.type) {
@@ -69,21 +75,27 @@ void NFA::processNode(RegexNode &node, int treeNumber) {
     }
 }
 
-
-
+/**
+ * Adds the NFA nodes for Star Closure
+ */
 void NFA::addStarClosure(RegexNode &node, int treeNumber) {
+    // Add starting closure node
     node.firstNFA = nfaNodes.size();
     nfaNodes.emplace_back(NFANode());
 
+    // Add end closure node
     node.lastNFA = nfaNodes.size();
     nfaNodes.emplace_back(NFANode());
 
-    nfaNodes[node.firstNFA].edges.emplace_back(edge(node.lastNFA, vector<char>()));
-
     int childLast = parseTrees[treeNumber][node.left].lastNFA;
     int childFirst = parseTrees[treeNumber][node.left].firstNFA;
+    // Connect first node and last node with epsilon
+    nfaNodes[node.firstNFA].edges.emplace_back( edge(node.lastNFA, vector<char>()) );
+    // Connect first node to first node in child with epsilon
     nfaNodes[node.firstNFA].edges.emplace_back( edge(childFirst, vector<char>()) );
+    // Connect the last node in child to the last node
     nfaNodes[childLast].edges.emplace_back( edge(node.lastNFA, vector<char>()) );
+    // Connect the last node in child to the first node in child
     nfaNodes[childLast].edges.emplace_back( edge(childFirst, vector<char>()) );
 
 }
@@ -110,6 +122,7 @@ void NFA::addCharacter(RegexNode &node, int treeNumber) {
     node.lastNFA = nfaNodes.size();
     nfaNodes.emplace_back(NFANode());
 
+
     nfaNodes[node.firstNFA].edges.emplace_back( edge(node.lastNFA, vector<char>{node.value[0]}) );
 }
 
@@ -119,8 +132,6 @@ void NFA::addId(RegexNode &node, int treeNumber) {
 
     node.lastNFA = nfaNodes.size();
     nfaNodes.emplace_back(NFANode());
-
-    cout << node.value << endl;
 
     nfaNodes[node.firstNFA].edges.emplace_back( edge(node.lastNFA, classLookupTable[node.value]) );
 }

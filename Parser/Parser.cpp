@@ -24,6 +24,7 @@ void Parser::printParseTrees() {
             j.printNode();
         }
     }
+    cout << "--------- END -----------" << endl;
 }
 
 void Parser::handleCharRange(char begin, char end, vector<char> & classChars) {

@@ -1,4 +1,4 @@
 class alpha [a-z]
-token hello /ab/
-token goodbye /cd/
-token hey /[alpha]/
+token alphaTest /[alpha]/
+token _hello5 /([alpha]*|b)/
+

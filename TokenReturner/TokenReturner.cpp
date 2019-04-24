@@ -84,7 +84,7 @@ pair<Tokens, string> getCTII(ifstream &file, char cur) {
             exit(0);
         }
         for (int i=1; i < lexeme.length(); i++) {
-            if (!isalpha(lexeme[i])) {
+            if (!isalnum(lexeme[i])) {
                 cout << "Invalid identifier: " << lexeme << endl;
                 exit(0);
             }
