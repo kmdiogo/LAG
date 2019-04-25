@@ -16,15 +16,20 @@ public:
     DFAGenerator(vector<NFANode> nfa, set<vector<char>> inputs) {
         NFA = nfa;
         this->inputs = inputs;
-        for (auto & state : eClosure(vector<int>{0})) {
+
+        /*for (auto & state : eClosure(vector<int>{0})) {
             cout << state << endl;
+        }*/
+
+        for (auto & x : move(vector<int>{3,3}, vector<char>{'b'})) {
+            cout << x << endl;
         }
     }
 
 private:
     // Methods
     vector<int> eClosure(vector<int> state);
-    void move(vector<int> state, vector<char> input);
+    vector<int> move(vector<int> state, vector<char> input);
 
     // Attributes
     vector<NFANode> NFA;

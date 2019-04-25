@@ -8,15 +8,24 @@ vector<int> DFAGenerator::eClosure(vector<int> state) {
     vector<int> transStates;
     for (auto & nodeNum : state) {
         transStates.emplace_back(nodeNum);
-        if (NFA[nodeNum].edges.empty()) {
-            for (auto & nodeNum2 : eClosure(vector<int>{nodeNum})) {
-                transStates.emplace_back(nodeNum2);
+        for (auto & edge : NFA[nodeNum].edges) {
+            if (edge.transChars.empty()) {
+                vector<int> closureOfNextNode = eClosure(vector<int>{edge.transNode});
+                transStates.insert(transStates.end(), closureOfNextNode.begin(), closureOfNextNode.end());
             }
         }
     }
     return transStates;
 }
 
-void DFAGenerator::move(vector<int> state, vector<char> input) {
-
+vector<int> DFAGenerator::move(vector<int> state, vector<char> input) {
+    vector<int> moveStates;
+    for (auto & nodeNum : state) {
+        for (auto & edge : NFA[nodeNum].edges) {
+            if (edge.transChars == input) {
+                moveStates.emplace_back(edge.transNode);
+            }
+        }
+    }
+    return moveStates;
 }
