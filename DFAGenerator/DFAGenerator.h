@@ -16,18 +16,16 @@ public:
     DFAGenerator(vector<NFANode> nfa, set<vector<char>> inputs) {
         NFA = nfa;
         this->inputs = inputs;
-
-        /*for (auto & state : eClosure(vector<int>{0})) {
-            cout << state << endl;
-        }*/
-
-        for (auto & x : move(vector<int>{3,3}, vector<char>{'b'})) {
-            cout << x << endl;
-        }
+        generateDFA();
     }
+
+    void printDFA();
+    map< vector<int>, map<vector<char>, vector<int>> > getDFATable() {return DFATable;}
 
 private:
     // Methods
+    void generateDFA();
+
     vector<int> eClosure(vector<int> state);
     vector<int> move(vector<int> state, vector<char> input);
 

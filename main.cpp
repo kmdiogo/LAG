@@ -24,6 +24,7 @@ int main() {
     //nfaGen.printInputs();
 
     DFAGenerator dfaGen = DFAGenerator(nfaGen.getNFA(), nfaGen.getInputs());
+    dfaGen.printDFA();
 
 
     return 0;
