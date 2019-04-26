@@ -24,6 +24,7 @@ public:
     void printNode();
     vector<edge> edges;
     bool isAccepting = false;
+    string tokenName = "";
 };
 
 

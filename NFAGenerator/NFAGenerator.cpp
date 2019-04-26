@@ -33,18 +33,18 @@ void NFAGenerator::printInputs() {
 }
 
 
-NFAGenerator::NFAGenerator(vector<vector<ParseTreeNode>> parseTrees, map<string, vector<char>> classLookupTable) {
+NFAGenerator::NFAGenerator(vector<vector<ParseTreeNode>> parseTrees, map<string, vector<char>> classLookupTable, vector<string> tokenNames) {
     this->parseTrees = parseTrees;
     this->classLookupTable = classLookupTable;
 
     // Add the starting node
     NFA.emplace_back(NFANode());
 
-
     // Iterate through all parse trees and generate their corresponding NFAGenerator
     for (int i=0; i < this->parseTrees.size(); i++) {
         processNode(parseTrees[i].back(), i);
         NFA[parseTrees[i].back().lastNFA].isAccepting = true;
+        NFA[parseTrees[i].back().lastNFA].tokenName = tokenNames[i];
     }
 
     // Add epsilon transitions for the generated regex NFAs (connects them together)

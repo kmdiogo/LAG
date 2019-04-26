@@ -31,13 +31,24 @@ vector<int> DFAGenerator::move(vector<int> state, vector<char> input) {
 }
 
 void DFAGenerator::generateDFA() {
+    int numberOfStates = 0;
     vector<int> initialState = eClosure(vector<int>{0});
     DFATable[initialState];
+    acceptingStates[initialState] = "Start";
+    stateAliases[initialState] = numberOfStates;
+    numberOfStates++;
+
     for (auto & statePair : DFATable) {
         for (auto & input : inputs) {
             vector<int> nextState = eClosure(move(statePair.first, input));
             DFATable[statePair.first][input] = nextState;
             if (DFATable.find(nextState) == DFATable.end() && !nextState.empty()) {
+                string dfaStateAcceptingTokenName = IsDFAStateAccepting(nextState);
+                if (dfaStateAcceptingTokenName != "") {
+                    acceptingStates[nextState] = dfaStateAcceptingTokenName;
+                }
+                stateAliases[nextState] = numberOfStates;
+                numberOfStates++;
                 DFATable[nextState];
             }
         }
@@ -59,27 +70,39 @@ void DFAGenerator::printDFA() {
 
     for (auto & statePair : DFATable) {
         cout << "State: {";
-        for (auto & ch : statePair.first) {
+        /*for (auto & ch : statePair.first) {
             cout << ch << ",";
-        }
+        }*/
+        cout << stateAliases[statePair.first];
         cout << "}" << "\t";
 
+
         for (auto & input : inputs) {
-            cout << " |Input [";
+            cout << "Input [";
             for (auto & ch : input) {
                 cout << ch << ",";
             }
             cout << "]: ";
 
             cout << "{";
-            for (auto & stateNum : DFATable[statePair.first][input]) {
+            /*for (auto & stateNum : DFATable[statePair.first][input]) {
                 cout << stateNum << ",";
-            }
-            cout << "}";
+            }*/
+            cout << stateAliases[DFATable[statePair.first][input]];
+            cout << "} | ";
+
         }
 
         cout << endl << endl;
     }
 
     cout << "----------------" << endl;
+}
+
+string DFAGenerator::IsDFAStateAccepting(vector<int> DFAState) {
+    for (auto & stateNum : DFAState) {
+        if (NFA[stateNum].isAccepting)
+            return NFA[stateNum].tokenName;
+    }
+    return "";
 }

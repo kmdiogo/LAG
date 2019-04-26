@@ -19,7 +19,7 @@ public:
     void printInputs();
     vector<NFANode> getNFA() {return NFA;}
     set<vector<char>> getInputs() {return inputs;}
-    NFAGenerator(vector< vector<ParseTreeNode> > parseTrees, map<string, vector<char>> classLookupTable);
+    NFAGenerator(vector< vector<ParseTreeNode> > parseTrees, map<string, vector<char>> classLookupTable, vector<string> tokenNames);
 private:
     void processNode(ParseTreeNode &node, int treeNumber);
     void addUnion(ParseTreeNode &node, int treeNumber);

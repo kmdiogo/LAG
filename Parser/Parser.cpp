@@ -156,6 +156,7 @@ bool Parser::matchTokenStmt() {
         return false;
     }
     cur = getNextToken(file, true);
+    tokenNames.emplace_back(cur.second);
 
     if (peekNextToken(false).first != Slash) {
         return false;

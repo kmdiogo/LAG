@@ -21,6 +21,7 @@ public:
     void printParseTrees();  // Debug function to view all parse trees
     vector<vector<ParseTreeNode>> getParseTrees() {return parseTrees;}
     map<string, vector<char>> getLookupTable() {return classLookupTable;}
+    vector<string> getTokenNames() {return tokenNames;}
     explicit Parser(const string &inputFilePath) {
         // Opening in binary mode necessary for input stream backtrack
         file.open(inputFilePath, ios::binary);
@@ -52,6 +53,7 @@ private:
     ifstream file;
     pair<Tokens, string> cur;
     vector< vector<ParseTreeNode> > parseTrees;
+    vector<string> tokenNames;
     map<string, vector<char>> classLookupTable;
 };
 

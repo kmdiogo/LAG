@@ -16,15 +16,24 @@
 using namespace std;
 
 int main() {
-    Parser p = Parser(PATH);
-    p.parse();
+    Parser parser = Parser(PATH);
+    parser.parse();
+    for (auto & x : parser.getTokenNames()) {
+        cout << x << endl;
+    }
 
-    NFAGenerator nfaGen = NFAGenerator(p.getParseTrees(), p.getLookupTable());
+    NFAGenerator nfaGen = NFAGenerator(parser.getParseTrees(), parser.getLookupTable(), parser.getTokenNames());
     nfaGen.printNFA();
     //nfaGen.printInputs();
 
     DFAGenerator dfaGen = DFAGenerator(nfaGen.getNFA(), nfaGen.getInputs());
     dfaGen.printDFA();
+    for (auto & p : dfaGen.getDFAStateTokenNames()) {
+        for (auto & x : p.first) {
+            cout << x << " ";
+        }
+        cout << " " << p.second << endl;
+    }
 
 
     return 0;
