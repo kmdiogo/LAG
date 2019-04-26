@@ -22,6 +22,7 @@ public:
     void printDFA();
     map< vector<int>, map<vector<char>, vector<int>> > getDFATable() {return DFATable;}
     map< vector<int>, string> getDFAStateTokenNames() {return acceptingStates;}
+    void simulateDFA(string input);
 
 private:
     // Methods
@@ -36,6 +37,7 @@ private:
     map< vector<int>, map<vector<char>, vector<int>> > DFATable;
     map< vector<int>, string> acceptingStates;
     map<vector<int>, int> stateAliases;
+    vector<int> startingState;
 
 };
 

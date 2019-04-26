@@ -1,5 +1,7 @@
-class alpha [a-d]
+class alpha [a-z]
+class alphaCapital [A-Z]
 class numbers [0-9]
-token alphaTest /(a|b)*/
+token alphaTest /([alpha]|[numbers]|[alphaCapital])*/
 token boi /c*d/
+
 

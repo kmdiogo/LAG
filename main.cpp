@@ -23,17 +23,22 @@ int main() {
     }
 
     NFAGenerator nfaGen = NFAGenerator(parser.getParseTrees(), parser.getLookupTable(), parser.getTokenNames());
-    nfaGen.printNFA();
+    //nfaGen.printNFA();
     //nfaGen.printInputs();
 
     DFAGenerator dfaGen = DFAGenerator(nfaGen.getNFA(), nfaGen.getInputs());
     dfaGen.printDFA();
+
     for (auto & p : dfaGen.getDFAStateTokenNames()) {
+        cout << "{";
         for (auto & x : p.first) {
-            cout << x << " ";
+            cout << x << ",";
         }
-        cout << " " << p.second << endl;
+        cout << "} " << p.second << endl;
     }
+
+
+    dfaGen.simulateDFA("guccitwotimesMotherFucker69");
 
 
     return 0;

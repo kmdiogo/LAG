@@ -33,6 +33,7 @@ vector<int> DFAGenerator::move(vector<int> state, vector<char> input) {
 void DFAGenerator::generateDFA() {
     int numberOfStates = 0;
     vector<int> initialState = eClosure(vector<int>{0});
+    startingState = initialState;
     DFATable[initialState];
     acceptingStates[initialState] = "Start";
     stateAliases[initialState] = numberOfStates;
@@ -105,4 +106,33 @@ string DFAGenerator::IsDFAStateAccepting(vector<int> DFAState) {
             return NFA[stateNum].tokenName;
     }
     return "";
+}
+
+void DFAGenerator::simulateDFA(string input) {
+    vector<int> currentState = startingState;
+    for (auto & ch : input) {
+        // Check if character in any transitions
+        for (auto & inputEdge : DFATable[currentState]) {
+            for (auto & inputChar : inputEdge.first) {
+                if (ch == inputChar) {
+                    if (inputEdge.second.empty()) {
+                        goto afterLoop;
+                    }
+                    currentState = inputEdge.second;
+                    break;
+                }
+            }
+        }
+    }
+    afterLoop:
+    cout << "{";
+    for (auto & x : currentState) {
+        cout << x << ",";
+    }
+    cout << "}" << endl;
+    if (acceptingStates.find(currentState) != acceptingStates.end()) {
+        cout << "Token: " << acceptingStates[currentState] << endl;
+    } else {
+        cout << "Invalid input string" << endl;
+    }
 }
