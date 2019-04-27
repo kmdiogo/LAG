@@ -7,6 +7,7 @@
 #include "utils/utils.h"
 #include "NFAGenerator/NFAGenerator.h"
 #include "DFAGenerator/DFAGenerator.h"
+#include "FileGenerator/FileGenerator.h"
 
 #include <map>
 #include <vector>
@@ -27,18 +28,19 @@ int main() {
     //nfaGen.printInputs();
 
     DFAGenerator dfaGen = DFAGenerator(nfaGen.getNFA(), nfaGen.getInputs());
-    dfaGen.printDFA();
+    //dfaGen.printDFA();
+    dfaGen.printSimpleDFA();
 
-    for (auto & p : dfaGen.getDFAStateTokenNames()) {
+    for (auto & p : dfaGen.acceptingStates) {
         cout << "{";
         for (auto & x : p.first) {
             cout << x << ",";
         }
         cout << "} " << p.second << endl;
     }
+    FileGenerator fileGen = FileGenerator(dfaGen.DFATableSimplified, dfaGen.acceptingStates, dfaGen.stateAliases, dfaGen.startingState, parser.getTokenNames(), nfaGen.getInputs());
 
 
-    dfaGen.simulateDFA("guccitwotimesMotherFucker69");
 
 
     return 0;

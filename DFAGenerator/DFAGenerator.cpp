@@ -54,18 +54,17 @@ void DFAGenerator::generateDFA() {
             }
         }
     }
+
+    for (auto & statePair : DFATable) {
+        map<vector<char>, int> stateMap;
+        for (auto & edgePair : statePair.second) {
+            stateMap[edgePair.first] = stateAliases[edgePair.second];
+        }
+        DFATableSimplified.emplace_back(stateMap);
+    }
 }
 
 void DFAGenerator::printDFA() {
-    cout << "--- INPUTS ---" << endl;
-    for (auto & input : inputs) {
-        for (auto & ch : input) {
-            cout << ch << " ";
-        }
-        cout << endl;
-    }
-    cout << "-------------" << endl;
-
     cout << "--- TRANSITION TABLE ---" << endl;
 
 
@@ -90,6 +89,42 @@ void DFAGenerator::printDFA() {
                 cout << stateNum << ",";
             }*/
             cout << stateAliases[DFATable[statePair.first][input]];
+            cout << "} | ";
+
+        }
+
+        cout << endl << endl;
+    }
+
+    cout << "----------------" << endl;
+}
+
+void DFAGenerator::printSimpleDFA() {
+    cout << "--- TRANSITION TABLE ---" << endl;
+
+
+    for (int i=0; i < DFATableSimplified.size(); i++) {
+        cout << "State: {";
+        /*for (auto & ch : statePair.first) {
+            cout << ch << ",";
+        }*/
+        cout << i;
+        cout << "}" << "\t";
+
+
+        for (auto & input : inputs) {
+            cout << "Input [";
+            for (auto & ch : input) {
+                cout << ch << ",";
+            }
+            cout << "]: ";
+
+            cout << "{";
+            /*for (auto & stateNum : DFATable[statePair.first][input]) {
+                cout << stateNum << ",";
+            }*/
+            cout << DFATableSimplified[i][input];
+
             cout << "} | ";
 
         }
