@@ -46,6 +46,10 @@ pair<Tokens, string> getNextToken(ifstream &file, bool aggregrate) {
             else if (cur == '|') {
                 return make_pair(Pipe, "|");
             }
+            else if (cur == '\\') {
+                file.get();
+                return make_pair(Character, string() + lookahead);
+            }
             else {
                 return make_pair(Character, string() + cur);
             }

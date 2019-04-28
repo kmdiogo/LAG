@@ -24,6 +24,8 @@ private:
     void processNode(ParseTreeNode &node, int treeNumber);
     void addUnion(ParseTreeNode &node, int treeNumber);
     void addStarClosure(ParseTreeNode &node, int treeNumber);
+    void addPlusClosure(ParseTreeNode &node, int treeNumber);
+    void addQuestionClosure(ParseTreeNode &node, int treeNumber);
     void addCharacter(ParseTreeNode &node, int treeNumber);
     void addConcat(ParseTreeNode &node, int treeNumber);
     void addId(ParseTreeNode &node, int treeNumber);

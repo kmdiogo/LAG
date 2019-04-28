@@ -12,12 +12,13 @@
 #include <fstream>
 #include <set>
 #include <string>
+#include <unordered_set>
 using namespace std;
 
 class FileGenerator {
 public:
     FileGenerator(vector<map<vector<char>, int> > & DFATable,
-            map< vector<int>, string> & acceptingStates,
+            map< int, string> & acceptingStates,
             map<vector<int>, int> & stateAliases,
             vector<int> & startingState,
             vector<string> tokenNames,
@@ -31,12 +32,16 @@ public:
         this->inputs = inputs;
 
         generateHeader();
+        generateBody();
     }
 
 private:
     void generateHeader();
+    void generateBody();
+    unordered_set<int> getIgnores();
+
     vector<map<vector<char>,int> > DFATable;
-    map< vector<int>, string> acceptingStates;
+    map<int, string> acceptingStates;
     map<vector<int>, int> stateAliases;
     vector<int> startingState;
     set<vector<char>> inputs;

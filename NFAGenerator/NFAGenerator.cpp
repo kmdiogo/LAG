@@ -72,6 +72,12 @@ void NFAGenerator::processNode(ParseTreeNode &node, int treeNumber) {
         case StarNode:
             addStarClosure(node, treeNumber);
             break;
+        case PlusNode:
+            addPlusClosure(node, treeNumber);
+            break;
+        case QuestionNode:
+            addQuestionClosure(node, treeNumber);
+            break;
         case UnionNode:
             addUnion(node, treeNumber);
             break;
@@ -168,6 +174,47 @@ void NFAGenerator::addConcat(ParseTreeNode &node, int treeNumber) {
 
     /*parseTrees[0][node.left].lastNFA = newLast;
     parseTrees[0][node.right].firstNFA = newFirst;*/
+}
+
+
+void NFAGenerator::addPlusClosure(ParseTreeNode &node, int treeNumber) {
+    // Add starting closure node
+    node.firstNFA = NFA.size();
+    NFA.emplace_back(NFANode());
+
+    // Add end closure node
+    node.lastNFA = NFA.size();
+    NFA.emplace_back(NFANode());
+
+    int childLast = parseTrees[treeNumber][node.left].lastNFA;
+    int childFirst = parseTrees[treeNumber][node.left].firstNFA;
+    // Connect first node to first node in child with epsilon
+    NFA[node.firstNFA].edges.emplace_back( edge(childFirst, vector<char>()) );
+    // Connect the last node in child to the last node
+    NFA[childLast].edges.emplace_back( edge(node.lastNFA, vector<char>()) );
+    // Connect the last node in child to the first node in child
+    NFA[childLast].edges.emplace_back( edge(childFirst, vector<char>()) );
+
+}
+
+void NFAGenerator::addQuestionClosure(ParseTreeNode &node, int treeNumber) {
+    // Add starting closure node
+    node.firstNFA = NFA.size();
+    NFA.emplace_back(NFANode());
+
+    // Add end closure node
+    node.lastNFA = NFA.size();
+    NFA.emplace_back(NFANode());
+
+    int childLast = parseTrees[treeNumber][node.left].lastNFA;
+    int childFirst = parseTrees[treeNumber][node.left].firstNFA;
+    // Connect first node and last node with epsilon
+    NFA[node.firstNFA].edges.emplace_back( edge(node.lastNFA, vector<char>()) );
+    // Connect first node to first node in child with epsilon
+    NFA[node.firstNFA].edges.emplace_back( edge(childFirst, vector<char>()) );
+    // Connect the last node in child to the last node
+    NFA[childLast].edges.emplace_back( edge(node.lastNFA, vector<char>()) );
+
 }
 
 

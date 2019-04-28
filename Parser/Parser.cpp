@@ -188,6 +188,7 @@ bool Parser::matchIgnoreStmt(){
     cur = getNextToken(file, false);
 
     parseTrees.emplace_back(vector<ParseTreeNode>());
+    tokenNames.emplace_back("ignore");
     if (!matchRegex()) {
         return false;
     }

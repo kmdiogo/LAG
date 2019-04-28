@@ -28,17 +28,20 @@ int main() {
     //nfaGen.printInputs();
 
     DFAGenerator dfaGen = DFAGenerator(nfaGen.getNFA(), nfaGen.getInputs());
-    //dfaGen.printDFA();
+    dfaGen.printDFA();
     dfaGen.printSimpleDFA();
 
-    for (auto & p : dfaGen.acceptingStates) {
+    for (auto & p : dfaGen.acceptingStateSimplified) {
         cout << "{";
-        for (auto & x : p.first) {
-            cout << x << ",";
-        }
+        cout << p.first;
         cout << "} " << p.second << endl;
     }
-    FileGenerator fileGen = FileGenerator(dfaGen.DFATableSimplified, dfaGen.acceptingStates, dfaGen.stateAliases, dfaGen.startingState, parser.getTokenNames(), nfaGen.getInputs());
+    FileGenerator fileGen = FileGenerator(dfaGen.DFATableSimplified,
+            dfaGen.acceptingStateSimplified,
+            dfaGen.stateAliases,
+            dfaGen.startingState,
+            parser.getTokenNames(),
+            nfaGen.getInputs());
 
 
 

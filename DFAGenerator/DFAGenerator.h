@@ -9,6 +9,7 @@
 #include <set>
 #include <map>
 #include "../NFANode/NFANode.h"
+#include <unordered_set>
 using namespace std;
 
 class DFAGenerator {
@@ -29,6 +30,8 @@ public:
     map< vector<int>, map<vector<char>, vector<int>> > DFATable;
     vector<map<vector<char>, int>> DFATableSimplified;
     map< vector<int>, string> acceptingStates;
+    map<int, string> acceptingStateSimplified;
+    unordered_set<int> ignores;
     map<vector<int>, int> stateAliases;
     vector<int> startingState;
 

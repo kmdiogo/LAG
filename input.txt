@@ -2,7 +2,13 @@ class alpha [a-z]
 class alphaCapital [A-Z]
 class numbers [0-9]
 
-token alphaTest /(a|b)*/
-token boi /c*d/
+
+token chadWarden /(chadwarden)+/
+token fuckWithNumbers /fuck[numbers]+/
+token aOrBStar /(a|b)*/
+ignore /\|/
+
+
+
 
 

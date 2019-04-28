@@ -35,7 +35,6 @@ void DFAGenerator::generateDFA() {
     vector<int> initialState = eClosure(vector<int>{0});
     startingState = initialState;
     DFATable[initialState];
-    acceptingStates[initialState] = "Start";
     stateAliases[initialState] = numberOfStates;
     numberOfStates++;
 
@@ -45,7 +44,7 @@ void DFAGenerator::generateDFA() {
             DFATable[statePair.first][input] = nextState;
             if (DFATable.find(nextState) == DFATable.end() && !nextState.empty()) {
                 string dfaStateAcceptingTokenName = IsDFAStateAccepting(nextState);
-                if (dfaStateAcceptingTokenName != "") {
+                if (!dfaStateAcceptingTokenName.empty()) {
                     acceptingStates[nextState] = dfaStateAcceptingTokenName;
                 }
                 stateAliases[nextState] = numberOfStates;
@@ -55,12 +54,32 @@ void DFAGenerator::generateDFA() {
         }
     }
 
+
+    for (auto & statePair : DFATable) {
+        DFATableSimplified.emplace_back(map<vector<char>,int>());
+    }
     for (auto & statePair : DFATable) {
         map<vector<char>, int> stateMap;
         for (auto & edgePair : statePair.second) {
-            stateMap[edgePair.first] = stateAliases[edgePair.second];
+            if (!edgePair.second.empty())
+                stateMap[edgePair.first] = stateAliases[edgePair.second];
+            else
+                stateMap[edgePair.first] = -1;
         }
-        DFATableSimplified.emplace_back(stateMap);
+        //DFATableSimplified.emplace_back(stateMap);
+        DFATableSimplified[stateAliases[statePair.first]] = stateMap;
+    }
+
+
+    for (auto & statePair : acceptingStates) {
+        acceptingStateSimplified[stateAliases[statePair.first]] = statePair.second;
+    }
+
+    for (auto & x : stateAliases) {
+        for (auto & i : x.first) {
+            cout << i << ",";
+        }
+        cout << " " << x.second << endl;
     }
 }
 
@@ -70,10 +89,9 @@ void DFAGenerator::printDFA() {
 
     for (auto & statePair : DFATable) {
         cout << "State: {";
-        /*for (auto & ch : statePair.first) {
+        for (auto & ch : statePair.first) {
             cout << ch << ",";
-        }*/
-        cout << stateAliases[statePair.first];
+        }
         cout << "}" << "\t";
 
 
@@ -85,10 +103,9 @@ void DFAGenerator::printDFA() {
             cout << "]: ";
 
             cout << "{";
-            /*for (auto & stateNum : DFATable[statePair.first][input]) {
+            for (auto & stateNum : DFATable[statePair.first][input]) {
                 cout << stateNum << ",";
-            }*/
-            cout << stateAliases[DFATable[statePair.first][input]];
+            }
             cout << "} | ";
 
         }

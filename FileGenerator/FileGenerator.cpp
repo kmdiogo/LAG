@@ -5,59 +5,168 @@
 #include "FileGenerator.h"
 using namespace std;
 
+const string fileLocation = "../../Lag_Driver/";
 void FileGenerator::generateHeader() {
     // Create token enum declaration
     string tokensStr = "enum Token{";
     for (auto & name: tokenNames) {
-        tokensStr += name + ",";
+        if (name != "ignore")
+            tokensStr += name + ",";
     }
     tokensStr += "};\n\n";
-    cout << tokensStr << endl << endl;
 
+    ofstream outFile;
+    outFile.open(fileLocation + "test.h");
+
+    outFile << R"(
+#include <vector>
+#include <map>
+#include <iostream>
+#include <fstream>
+#include <unordered_set>
+using namespace std;
+)";
+
+    outFile << tokensStr;
+
+    outFile << R"(
+class LexicalAnalyzer {
+    public:
+        LexicalAnalyzer(ifstream &input);
+        void start();
+        bool next(Token &t, string &lexeme);
+
+        vector< map<vector<char>, int> > dfa;
+        map<int, Token> acceptingStates;
+        unordered_set<int> ignores;
+        ifstream & input;
+
+};
+)";
+
+    //outFile << tokensStr << inputSetStr << statesStr << dfaStr;
+    outFile.close();
+
+}
+
+void FileGenerator::generateBody() {
     // Create inputs vector declaration
-    string inputSetStr = "vector<vector<char>> inputs;\n";
+    string genInputsStr;
     for (auto & charSet : inputs) {
-        inputSetStr += "inputs.emplace_back(vector<char>{";
+        genInputsStr += "inputs.emplace_back(vector<char>{";
         for (auto & ch : charSet) {
-            inputSetStr += "'";
-            inputSetStr += ch;
-            inputSetStr += "'";
-            inputSetStr += ",";
+            genInputsStr += "'";
+            genInputsStr += ch;
+            genInputsStr += "'";
+            genInputsStr += ",";
         }
-        inputSetStr += "});\n";
+        genInputsStr += "});\n";
     }
-    inputSetStr += "\n\n";
+    genInputsStr += "\n\n";
+
 
     // Create state vector declaration string
-    string statesStr = "vector<int> states;\n";
+    string genStateStr;
     for (int i=0; i < DFATable.size(); i++) {
-        statesStr += "states.emplace_back(" + to_string(i) + ");\n";
+        genStateStr += "states.emplace_back(" + to_string(i) + ");\n";
     }
-    statesStr += "\n\n";
+    genStateStr += "\n\n";
+
 
     // Create DFA declaration
-    string dfaStr = "vector< map<vector<char>, int> > dfa;\nmap<vector<char>, int> stateMap;\n";
+    string genDFAStr = "map<vector<char>, int> stateMap;\n";
     for (int i=0; i < DFATable.size(); i++) {
         for (auto & charSet : inputs) {
-            dfaStr += "stateMap[vector<char>{";
+            genDFAStr += "stateMap[vector<char>{";
             for (auto & ch : charSet) {
-                dfaStr += "'";
-                dfaStr += ch;
-                dfaStr += "'";
-                dfaStr += ",";
+                genDFAStr += "'";
+                genDFAStr += ch;
+                genDFAStr += "'";
+                genDFAStr += ",";
             }
-            dfaStr += "}] = " + to_string(DFATable[i][charSet]) + ";\n";
+            genDFAStr += "}] = " + to_string(DFATable[i][charSet]) + ";\n";
         }
-        dfaStr += "dfa.emplace_back(stateMap);\n";
+        genDFAStr += "dfa.emplace_back(stateMap);\n\n";
+
     }
+
+    // Create accepting states map
+    string genAccStatesStr;
+    for (auto & statePair : acceptingStates) {
+        if (statePair.second != "ignore")
+            genAccStatesStr += "acceptingStates[" + to_string(statePair.first) + "]=" + statePair.second + ";\n";
+        else
+            genAccStatesStr += "ignores.insert(" + to_string(statePair.first) + ");\n";
+    }
+    genAccStatesStr += "\n\n";
+
 
 
 
     ofstream outFile;
-    outFile.open("../test.h");
-    outFile << "#include <vector>\n#include <map>\nusing namespace std;\n";
-    outFile << tokensStr << inputSetStr << statesStr << dfaStr;
+    outFile.open(fileLocation + "test.cpp");
+    outFile << R"(
+#include "test.h"
+using namespace std;
+
+LexicalAnalyzer::LexicalAnalyzer(ifstream &INPUT) : input(INPUT) {
+)";
+    outFile << genDFAStr << genAccStatesStr << "}\n\n\n";
+
+    outFile << R"(
+bool LexicalAnalyzer::next(Token &t, string &lexeme) {
+    begin:
+    if (input.eof()) {
+        return false;
+    }
+    string lex = "";
+    char curChar;
+    int currentState = 0;
+    while (input >> curChar) {
+        bool inputMatched = false;
+        for (auto & inp : dfa[currentState]) {
+            for (auto & ch : inp.first) {
+                if (curChar == ch) {
+                    inputMatched = true;
+                    if (inp.second == -1) {
+                        input.seekg(-1, input.cur);
+                        goto afterLoop;
+                    }
+                    lex += curChar;
+                    currentState = inp.second;
+                    break;
+                }
+            }
+        }
+        if (!inputMatched) throw "Input doesn't match any token";
+    }
+    afterLoop:
+
+    if (ignores.find(currentState) != ignores.end()) {
+        goto begin;
+    }
+    else if (acceptingStates.find(currentState) == acceptingStates.end()) {
+        throw "Input doesn't match any token";
+    }
+    else {
+        t = acceptingStates[currentState];
+        lexeme = lex;
+        return true;
+    }
+}
+)";
+
+
+
     outFile.close();
+}
 
-
+unordered_set<int> FileGenerator::getIgnores() {
+    unordered_set<int> igns;
+    for (auto & x : acceptingStates) {
+        if (x.second == "ignore") {
+            igns.insert(x.first);
+        }
+    }
+    return igns;
 }
