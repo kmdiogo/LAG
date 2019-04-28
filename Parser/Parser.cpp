@@ -27,7 +27,8 @@ void Parser::printParseTrees() {
     cout << "--------- END -----------" << endl;
 }
 
-void Parser::handleCharRange(char begin, char end, vector<char> & classChars) {
+vector<char> Parser::handleCharRange(char begin, char end) {
+    vector<char> classChars;
     if (begin > end) {
         cout << "Given character range: [" << begin << " - " << end << "] is invalid" << endl;
         exit(0);
@@ -35,6 +36,7 @@ void Parser::handleCharRange(char begin, char end, vector<char> & classChars) {
     for (int i=begin; i <= end; i++) {
         classChars.emplace_back(char(i));
     }
+    return classChars;
 }
 
 
@@ -137,7 +139,7 @@ bool Parser::matchCItem() {
         // Save the last character in the range
         char end = cur.second[0];
 
-        handleCharRange(begin, end, classLookupTable[currentClass]);
+        classLookupTable[currentClass] = handleCharRange(begin, end);
         return true;
     }
     else {

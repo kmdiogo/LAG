@@ -44,7 +44,7 @@ private:
     bool matchRTerm();
     bool matchRClosure();
     bool matchRFactor();
-    void handleCharRange(char lower, char upper, vector<char> & classChars);
+    vector<char> handleCharRange(char lower, char upper);
 
     // Other Methods
     pair<Tokens, string> peekNextToken(bool aggregrate);    // Calls getNextToken() from TokenReturner but backtracks after done

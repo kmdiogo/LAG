@@ -55,6 +55,13 @@ pair<Tokens, string> getNextToken(ifstream &file, bool aggregrate) {
             }
         }
         else {
+            if (cur == '/' && lookahead == '/') {
+                while (true) {
+                    file.get(cur);
+                    if (cur == '\n')
+                        break;
+                }
+            }
             if ( (isalnum(cur) || cur == '_'))
                 return getCTII(file, cur);
         }

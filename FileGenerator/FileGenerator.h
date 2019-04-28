@@ -19,33 +19,35 @@ class FileGenerator {
 public:
     FileGenerator(vector<map<vector<char>, int> > & DFATable,
             map< int, string> & acceptingStates,
-            map<vector<int>, int> & stateAliases,
-            vector<int> & startingState,
             vector<string> tokenNames,
-            const set<vector<char>> & inputs) {
+            const set<vector<char>> & inputs,
+            map<string, vector<char>> charClassLookup) {
 
         this->DFATable = DFATable;
         this->acceptingStates = acceptingStates;
-        this->stateAliases = stateAliases;
-        this->startingState = startingState;
         this->tokenNames = tokenNames;
         this->inputs = inputs;
+        for (auto & p : charClassLookup) {
+            this->charClassLookup[p.second] = p.first;
+        }
+
 
         generateHeader();
         generateBody();
+        generateListingFile();
     }
 
 private:
     void generateHeader();
     void generateBody();
+    void generateListingFile();
     unordered_set<int> getIgnores();
 
     vector<map<vector<char>,int> > DFATable;
     map<int, string> acceptingStates;
-    map<vector<int>, int> stateAliases;
-    vector<int> startingState;
     set<vector<char>> inputs;
     vector<string> tokenNames;
+    map<vector<char>, string> charClassLookup;
 };
 
 

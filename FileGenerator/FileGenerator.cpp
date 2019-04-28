@@ -40,6 +40,7 @@ class LexicalAnalyzer {
         map<int, Token> acceptingStates;
         unordered_set<int> ignores;
         ifstream & input;
+        map<vector<char>, string> inputClassLookup;
 
 };
 )";
@@ -100,18 +101,34 @@ void FileGenerator::generateBody() {
     }
     genAccStatesStr += "\n\n";
 
+    // Create input class genLookup table
+    /*string genLookup;
+    for (auto & inPair : charClassLookup) {
+        genLookup += "inputClassLookup[vector<char>{";
+        for (auto & ch : inPair.second) {
+            genLookup += "'";
+            genLookup += ch;
+            genLookup += "'";
+            genLookup += ",";
+        }
+        genLookup += "}] = \"" + inPair.first + "\";\n";
+    }
+    genLookup += "\n\n";*/
+
 
 
 
     ofstream outFile;
     outFile.open(fileLocation + "test.cpp");
+
     outFile << R"(
 #include "test.h"
 using namespace std;
 
 LexicalAnalyzer::LexicalAnalyzer(ifstream &INPUT) : input(INPUT) {
 )";
-    outFile << genDFAStr << genAccStatesStr << "}\n\n\n";
+
+    outFile << genDFAStr << genAccStatesStr <<  "}\n\n\n";
 
     outFile << R"(
 bool LexicalAnalyzer::next(Token &t, string &lexeme) {
@@ -169,4 +186,25 @@ unordered_set<int> FileGenerator::getIgnores() {
         }
     }
     return igns;
+}
+
+void FileGenerator::generateListingFile() {
+    ofstream outFile;
+    outFile.open(fileLocation + "listingFile.txt");
+
+    for (int i=0; i < DFATable.size(); i++) {
+        outFile << "------ STATE " << i;
+        if (acceptingStates.find(i) != acceptingStates.end())
+            outFile << " (accepting for token " << acceptingStates[i] << ") ";
+        outFile << " ------\n";
+        for (auto & inputPair : DFATable[i]) {
+            outFile << "\tinput [";
+            if (charClassLookup.find(inputPair.first) != charClassLookup.end())
+                outFile << charClassLookup[inputPair.first];
+            else
+                outFile << inputPair.first[0];
+            outFile << "]: " << inputPair.second << "\n";
+        }
+    }
+    outFile.close();
 }

@@ -24,12 +24,7 @@ int main() {
     }
 
     NFAGenerator nfaGen = NFAGenerator(parser.getParseTrees(), parser.getLookupTable(), parser.getTokenNames());
-    //nfaGen.printNFA();
-    //nfaGen.printInputs();
-
     DFAGenerator dfaGen = DFAGenerator(nfaGen.getNFA(), nfaGen.getInputs());
-    dfaGen.printDFA();
-    dfaGen.printSimpleDFA();
 
     for (auto & p : dfaGen.acceptingStateSimplified) {
         cout << "{";
@@ -38,10 +33,9 @@ int main() {
     }
     FileGenerator fileGen = FileGenerator(dfaGen.DFATableSimplified,
             dfaGen.acceptingStateSimplified,
-            dfaGen.stateAliases,
-            dfaGen.startingState,
             parser.getTokenNames(),
-            nfaGen.getInputs());
+            nfaGen.getInputs(),
+            parser.getLookupTable());
 
 
 
