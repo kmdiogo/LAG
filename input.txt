@@ -2,9 +2,9 @@ class alpha [a-z]
 class alphaCapital [A-Z]
 class numbers [0-9]
 
-// token boi /z/
-ignore /(\||z)*g/
-token aOrB /(a|b)*/
+token identifier /([alpha]|[alphaCapital])+[alpha]*/
+token numbas /[numbers]*/
+ignore /\ */
 
 
 

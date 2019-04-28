@@ -35,7 +35,8 @@ class LexicalAnalyzer {
         LexicalAnalyzer(ifstream &input);
         void start();
         bool next(Token &t, string &lexeme);
-
+        bool nextMatchesIgnore();
+    private:
         vector< map<vector<char>, int> > dfa;
         map<int, Token> acceptingStates;
         unordered_set<int> ignores;
@@ -45,7 +46,6 @@ class LexicalAnalyzer {
 };
 )";
 
-    //outFile << tokensStr << inputSetStr << statesStr << dfaStr;
     outFile.close();
 
 }
@@ -54,7 +54,7 @@ void FileGenerator::generateBody() {
     // Create inputs vector declaration
     string genInputsStr;
     for (auto & charSet : inputs) {
-        genInputsStr += "inputs.emplace_back(vector<char>{";
+        genInputsStr += "\tinputs.emplace_back(vector<char>{";
         for (auto & ch : charSet) {
             genInputsStr += "'";
             genInputsStr += ch;
@@ -69,16 +69,16 @@ void FileGenerator::generateBody() {
     // Create state vector declaration string
     string genStateStr;
     for (int i=0; i < DFATable.size(); i++) {
-        genStateStr += "states.emplace_back(" + to_string(i) + ");\n";
+        genStateStr += "\tstates.emplace_back(" + to_string(i) + ");\n";
     }
     genStateStr += "\n\n";
 
 
     // Create DFA declaration
-    string genDFAStr = "map<vector<char>, int> stateMap;\n";
+    string genDFAStr = "\tmap<vector<char>, int> stateMap;\n";
     for (int i=0; i < DFATable.size(); i++) {
         for (auto & charSet : inputs) {
-            genDFAStr += "stateMap[vector<char>{";
+            genDFAStr += "\tstateMap[vector<char>{";
             for (auto & ch : charSet) {
                 genDFAStr += "'";
                 genDFAStr += ch;
@@ -87,17 +87,17 @@ void FileGenerator::generateBody() {
             }
             genDFAStr += "}] = " + to_string(DFATable[i][charSet]) + ";\n";
         }
-        genDFAStr += "dfa.emplace_back(stateMap);\n\n";
+        genDFAStr += "\tdfa.emplace_back(stateMap);\n\n";
 
     }
 
-    // Create accepting states map
+    // Create accepting states map and ignore set
     string genAccStatesStr;
     for (auto & statePair : acceptingStates) {
-        if (statePair.second != "ignore")
-            genAccStatesStr += "acceptingStates[" + to_string(statePair.first) + "]=" + statePair.second + ";\n";
+        if (statePair.second == "ignore")
+            genAccStatesStr += "\tignores.insert(" + to_string(statePair.first) + ");\n";
         else
-            genAccStatesStr += "ignores.insert(" + to_string(statePair.first) + ");\n";
+            genAccStatesStr += "\tacceptingStates[" + to_string(statePair.first) + "]=" + statePair.second + ";\n";
     }
     genAccStatesStr += "\n\n";
 
@@ -115,9 +115,6 @@ void FileGenerator::generateBody() {
     }
     genLookup += "\n\n";*/
 
-
-
-
     ofstream outFile;
     outFile.open(fileLocation + "test.cpp");
 
@@ -130,7 +127,7 @@ LexicalAnalyzer::LexicalAnalyzer(ifstream &INPUT) : input(INPUT) {
 
     outFile << genDFAStr << genAccStatesStr <<  "}\n\n\n";
 
-    outFile << R"(
+    /*outFile << R"(
 bool LexicalAnalyzer::next(Token &t, string &lexeme) {
     begin:
     if (input.eof()) {
@@ -171,9 +168,88 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
         return true;
     }
 }
+)";*/
+    outFile << R"(
+bool LexicalAnalyzer::next(Token &t, string &lexeme) {
+    if (input.eof()) {
+        return false;
+    }
+    string lex = "";
+    char curChar;
+    int currentState = 0;
+
+    beginAfterIgnore:
+    while (input >> curChar) {
+        bool inputMatched = false;
+        for (auto & inp : dfa[currentState]) {
+            for (auto & ch : inp.first) {
+                if (curChar == ch) {
+                    inputMatched = true;
+                    if (inp.second == -1) {
+                        input.seekg(-1, input.cur);
+                        if (nextMatchesIgnore()) {
+                            goto beginAfterIgnore;
+                        }
+                        goto afterLoop;
+                    }
+                    lex += curChar;
+                    currentState = inp.second;
+                    break;
+                }
+            }
+        }
+        if (!inputMatched) throw "Input doesn't match any token";
+    }
+    afterLoop:
+
+    if (acceptingStates.find(currentState) == acceptingStates.end()) {
+        throw "Input doesn't match any token";
+    }
+    else {
+        t = acceptingStates[currentState];
+        lexeme = lex;
+        return true;
+    }
+}
+
+bool LexicalAnalyzer::nextMatchesIgnore() {
+    if (input.eof()) {
+        return false;
+    }
+    string lex = "";
+    char curChar;
+    int currentState = 0;
+    int offset = 0;
+
+    while (input >> curChar) {
+        offset++;
+        bool inputMatched = false;
+        for (auto & inp : dfa[currentState]) {
+            for (auto & ch : inp.first) {
+                if (curChar == ch) {
+                    inputMatched = true;
+                    if (inp.second == -1) {
+                        input.seekg(-1, input.cur);
+                        goto afterLoop;
+                    }
+                    lex += curChar;
+                    currentState = inp.second;
+                    break;
+                }
+            }
+        }
+        if (!inputMatched) throw "Input doesn't match any token";
+    }
+    afterLoop:
+
+    if (ignores.find(currentState) != ignores.end()) {
+        return true;
+    }
+    input.seekg(-offset+1, input.cur);
+    return false;
+
+}
 )";
-
-
 
     outFile.close();
 }
