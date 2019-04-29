@@ -4,26 +4,26 @@
 
 #include "DFAGenerator.h"
 
-vector<int> DFAGenerator::eClosure(vector<int> state) {
-    vector<int> transStates;
+set<int> DFAGenerator::eClosure(set<int> state) {
+    set<int> transStates;
     for (auto & nodeNum : state) {
-        transStates.emplace_back(nodeNum);
+        transStates.insert(nodeNum);
         for (auto & edge : NFA[nodeNum].edges) {
             if (edge.transChars.empty()) {
-                vector<int> closureOfNextNode = eClosure(vector<int>{edge.transNode});
-                transStates.insert(transStates.end(), closureOfNextNode.begin(), closureOfNextNode.end());
+                set<int> closureOfNextNode = eClosure(set<int>{edge.transNode});
+                transStates.insert(closureOfNextNode.begin(), closureOfNextNode.end());
             }
         }
     }
     return transStates;
 }
 
-vector<int> DFAGenerator::move(vector<int> state, vector<char> input) {
-    vector<int> moveStates;
+set<int> DFAGenerator::move(set<int> state, vector<char> input) {
+    set<int> moveStates;
     for (auto & nodeNum : state) {
         for (auto & edge : NFA[nodeNum].edges) {
             if (edge.transChars == input) {
-                moveStates.emplace_back(edge.transNode);
+                moveStates.insert(edge.transNode);
             }
         }
     }
@@ -31,28 +31,36 @@ vector<int> DFAGenerator::move(vector<int> state, vector<char> input) {
 }
 
 void DFAGenerator::generateDFA() {
-    int numberOfStates = 0;
-    vector<int> initialState = eClosure(vector<int>{0});
+    int nextStateAlias = 0;
+    set<int> initialState = eClosure(set<int>{0});
     startingState = initialState;
     DFATable[initialState];
-    stateAliases[initialState] = numberOfStates;
-    numberOfStates++;
+    stateAliases[initialState] = nextStateAlias;
+    nextStateAlias++;
 
-    for (auto & statePair : DFATable) {
+    queue<set<int>> newStateQueue;
+    newStateQueue.push(initialState);
+    while (!newStateQueue.empty()){
+        set<int> curState = newStateQueue.front();
         for (auto & input : inputs) {
-            vector<int> nextState = eClosure(move(statePair.first, input));
-            DFATable[statePair.first][input] = nextState;
+            set<int> moveOnState = move(curState, input);
+            set<int> nextState = eClosure(moveOnState);
+            DFATable[curState][input] = nextState;
             if (DFATable.find(nextState) == DFATable.end() && !nextState.empty()) {
                 string dfaStateAcceptingTokenName = IsDFAStateAccepting(nextState);
                 if (!dfaStateAcceptingTokenName.empty()) {
                     acceptingStates[nextState] = dfaStateAcceptingTokenName;
                 }
-                stateAliases[nextState] = numberOfStates;
-                numberOfStates++;
+                stateAliases[nextState] = nextStateAlias;
+                nextStateAlias++;
                 DFATable[nextState];
+                newStateQueue.push(nextState);
             }
         }
+        newStateQueue.pop();
     }
+
+    //}
 
 
     for (auto & statePair : DFATable) {
@@ -152,7 +160,7 @@ void DFAGenerator::printSimpleDFA() {
     cout << "----------------" << endl;
 }
 
-string DFAGenerator::IsDFAStateAccepting(vector<int> DFAState) {
+string DFAGenerator::IsDFAStateAccepting(set<int> DFAState) {
     for (auto & stateNum : DFAState) {
         if (NFA[stateNum].isAccepting)
             return NFA[stateNum].tokenName;
@@ -161,7 +169,7 @@ string DFAGenerator::IsDFAStateAccepting(vector<int> DFAState) {
 }
 
 void DFAGenerator::simulateDFA(string input) {
-    vector<int> currentState = startingState;
+    /*vector<int> currentState = startingState;
     for (auto & ch : input) {
         // Check if character in any transitions
         for (auto & inputEdge : DFATable[currentState]) {
@@ -186,5 +194,5 @@ void DFAGenerator::simulateDFA(string input) {
         cout << "Token: " << acceptingStates[currentState] << endl;
     } else {
         cout << "Invalid input string" << endl;
-    }
+    }*/
 }

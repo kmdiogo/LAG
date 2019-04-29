@@ -41,7 +41,6 @@ class LexicalAnalyzer {
         map<int, Token> acceptingStates;
         unordered_set<int> ignores;
         ifstream & input;
-        map<vector<char>, string> inputClassLookup;
 
 };
 )";
@@ -179,7 +178,7 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
     int currentState = 0;
 
     beginAfterIgnore:
-    while (input >> curChar) {
+    while (input.get(curChar)) {
         bool inputMatched = false;
         for (auto & inp : dfa[currentState]) {
             for (auto & ch : inp.first) {
@@ -212,6 +211,9 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
     }
 }
 
+)";
+
+    outFile << R"(
 bool LexicalAnalyzer::nextMatchesIgnore() {
     if (input.eof()) {
         return false;
@@ -221,7 +223,7 @@ bool LexicalAnalyzer::nextMatchesIgnore() {
     int currentState = 0;
     int offset = 0;
 
-    while (input >> curChar) {
+    while (input.get(curChar)) {
         offset++;
         bool inputMatched = false;
         for (auto & inp : dfa[currentState]) {

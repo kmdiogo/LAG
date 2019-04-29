@@ -6,10 +6,12 @@
 #define LAG_DFAGENERATOR_H
 
 #include <vector>
-#include <set>
 #include <map>
-#include "../NFANode/NFANode.h"
 #include <unordered_set>
+#include <set>
+#include <queue>
+#include "../NFANode/NFANode.h"
+
 using namespace std;
 
 class DFAGenerator {
@@ -27,20 +29,20 @@ public:
     // Attributes
     vector<NFANode> NFA;
     set<vector<char>> inputs;
-    map< vector<int>, map<vector<char>, vector<int>> > DFATable;
+    map< set<int>, map<vector<char>, set<int>> > DFATable;
     vector<map<vector<char>, int>> DFATableSimplified;
-    map< vector<int>, string> acceptingStates;
+    map< set<int>, string> acceptingStates;
     map<int, string> acceptingStateSimplified;
-    unordered_set<int> ignores;
-    map<vector<int>, int> stateAliases;
-    vector<int> startingState;
+    set<int> ignores;
+    map<set<int>, int> stateAliases;
+    set<int> startingState;
 
 private:
     // Methods
     void generateDFA();
-    string IsDFAStateAccepting(vector<int> DFAState);
-    vector<int> eClosure(vector<int> state);
-    vector<int> move(vector<int> state, vector<char> input);
+    string IsDFAStateAccepting(set<int> DFAState);
+    set<int> eClosure(set<int> state);
+    set<int> move(set<int> state, vector<char> input);
 
 };
 

@@ -17,7 +17,7 @@ using namespace std;
 
 class Parser {
 public:
-    void parse();
+
     void printParseTrees();  // Debug function to view all parse trees
     vector<vector<ParseTreeNode>> getParseTrees() {return parseTrees;}
     map<string, vector<char>> getLookupTable() {return classLookupTable;}
@@ -29,9 +29,11 @@ public:
             cout << "Unable to open file: " << inputFilePath << endl;
             exit(0);
         }
+        parse();
     }
 
 private:
+    void parse();
     // Grammar rule subroutines
     bool matchStmtList();
     bool matchStmt();

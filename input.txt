@@ -1,9 +1,10 @@
 class alpha [a-z]
 class alphaCapital [A-Z]
-class numbers [0-9]
+class num [0-9]
 
-token identifier /([alpha]|[alphaCapital])+[alpha]*/
-token numbas /[numbers]*/
+token numberedVariable /([alpha]|[alphaCapital])+[num]?/
+token phoneNumber /[num][num][num]\-[num][num][num]\-[num][num][num][num]/
+token random /(\[HELLO\])*/
 ignore /\ */
 
 
