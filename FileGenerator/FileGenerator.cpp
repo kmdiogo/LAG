@@ -5,7 +5,8 @@
 #include "FileGenerator.h"
 using namespace std;
 
-const string fileLocation = "../../Lag_Driver/";
+const string fileLocation = "../../LAG_Driver/";
+const string fileName = "test";
 void FileGenerator::generateHeader() {
     // Create token enum declaration
     string tokensStr = "enum Token{";
@@ -16,7 +17,11 @@ void FileGenerator::generateHeader() {
     tokensStr += "};\n\n";
 
     ofstream outFile;
-    outFile.open(fileLocation + "test.h");
+    outFile.open(fileLocation + fileName + ".h");
+    if (!outFile) {
+        cout << "File write error" << endl;
+        exit(0);
+    }
 
     outFile << R"(
 #include <vector>
@@ -115,7 +120,7 @@ void FileGenerator::generateBody() {
     genLookup += "\n\n";*/
 
     ofstream outFile;
-    outFile.open(fileLocation + "test.cpp");
+    outFile.open(fileLocation + fileName + ".cpp");
 
     outFile << R"(
 #include "test.h"
@@ -126,7 +131,7 @@ LexicalAnalyzer::LexicalAnalyzer(ifstream &INPUT) : input(INPUT) {
 
     outFile << genDFAStr << genAccStatesStr <<  "}\n\n\n";
 
-    /*outFile << R"(
+    outFile << R"(
 bool LexicalAnalyzer::next(Token &t, string &lexeme) {
     begin:
     if (input.eof()) {
@@ -167,9 +172,10 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
         return true;
     }
 }
-)";*/
-    outFile << R"(
+)";
+    /*outFile << R"(
 bool LexicalAnalyzer::next(Token &t, string &lexeme) {
+    begin:
     if (input.eof()) {
         return false;
     }
@@ -177,7 +183,6 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
     char curChar;
     int currentState = 0;
 
-    beginAfterIgnore:
     while (input.get(curChar)) {
         bool inputMatched = false;
         for (auto & inp : dfa[currentState]) {
@@ -186,9 +191,6 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
                     inputMatched = true;
                     if (inp.second == -1) {
                         input.seekg(-1, input.cur);
-                        if (nextMatchesIgnore()) {
-                            goto beginAfterIgnore;
-                        }
                         goto afterLoop;
                     }
                     lex += curChar;
@@ -201,7 +203,10 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
     }
     afterLoop:
 
-    if (acceptingStates.find(currentState) == acceptingStates.end()) {
+    if (acceptingStates.find(currentState) != acceptingStates.end() && acceptingStates[currentState] == "ignore") {
+        goto begin;
+    }
+    else if (acceptingStates.find(currentState) == acceptingStates.end()) {
         throw "Input doesn't match any token";
     }
     else {
@@ -210,48 +215,7 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
         return true;
     }
 }
-
-)";
-
-    outFile << R"(
-bool LexicalAnalyzer::nextMatchesIgnore() {
-    if (input.eof()) {
-        return false;
-    }
-    string lex = "";
-    char curChar;
-    int currentState = 0;
-    int offset = 0;
-
-    while (input.get(curChar)) {
-        offset++;
-        bool inputMatched = false;
-        for (auto & inp : dfa[currentState]) {
-            for (auto & ch : inp.first) {
-                if (curChar == ch) {
-                    inputMatched = true;
-                    if (inp.second == -1) {
-                        input.seekg(-1, input.cur);
-                        goto afterLoop;
-                    }
-                    lex += curChar;
-                    currentState = inp.second;
-                    break;
-                }
-            }
-        }
-        if (!inputMatched) throw "Input doesn't match any token";
-    }
-    afterLoop:
-
-    if (ignores.find(currentState) != ignores.end()) {
-        return true;
-    }
-    input.seekg(-offset+1, input.cur);
-    return false;
-
-}
-)";
+)";*/
 
     outFile.close();
 }
