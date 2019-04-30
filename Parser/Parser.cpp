@@ -124,6 +124,7 @@ bool Parser::matchCItem() {
     }
     cur = getNextToken(file, false);
 
+    classLookupTable[currentClass];
     if (peekNextToken(false).first == Dash) {
         // Save the first character in the range
         char begin = cur.second[0];
@@ -138,8 +139,10 @@ bool Parser::matchCItem() {
 
         // Save the last character in the range
         char end = cur.second[0];
-
-        classLookupTable[currentClass] = handleCharRange(begin, end);
+        for (auto & ch : handleCharRange(begin, end)) {
+            classLookupTable[currentClass].emplace_back(ch);
+        }
+        //classLookupTable[currentClass].emplace_back(handleCharRange(begin, end));
         return true;
     }
     else {

@@ -48,6 +48,16 @@ pair<Tokens, string> getNextToken(ifstream &file, bool aggregrate) {
             }
             else if (cur == '\\') {
                 file.get();
+                if (lookahead == 'n')
+                    return make_pair(Character, "\n");
+                else if (lookahead == 't')
+                    return make_pair(Character, "\t");
+                else if (lookahead == 'f')
+                    return make_pair(Character, "\f");
+                else if (lookahead == 'v')
+                    return make_pair(Character, "\v");
+                else if (lookahead == 'r')
+                    return make_pair(Character, "\r");
                 return make_pair(Character, string() + lookahead);
             }
             else {
@@ -95,7 +105,7 @@ pair<Tokens, string> getCTII(ifstream &file, char cur) {
             exit(0);
         }
         for (int i=1; i < lexeme.length(); i++) {
-            if (!isalnum(lexeme[i])) {
+            if (!isalnum(lexeme[i]) && lexeme[i] != '_') {
                 cout << "Invalid identifier: " << lexeme << endl;
                 exit(0);
             }

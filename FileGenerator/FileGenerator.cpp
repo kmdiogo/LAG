@@ -61,7 +61,19 @@ void FileGenerator::generateBody() {
         genInputsStr += "\tinputs.emplace_back(vector<char>{";
         for (auto & ch : charSet) {
             genInputsStr += "'";
-            genInputsStr += ch;
+            cout << "Input : " << ch << endl;
+            if (ch == '\n')
+                genInputsStr += "\\n";
+            else if (ch == '\t')
+                genInputsStr += "\\t";
+            else if (ch == '\f')
+                genInputsStr += "\\f";
+            else if (ch == '\v')
+                genInputsStr += "\\v";
+            else if (ch == '\r')
+                genInputsStr += "\\r";
+            else
+                genInputsStr += ch;
             genInputsStr += "'";
             genInputsStr += ",";
         }
@@ -85,7 +97,19 @@ void FileGenerator::generateBody() {
             genDFAStr += "\tstateMap[vector<char>{";
             for (auto & ch : charSet) {
                 genDFAStr += "'";
-                genDFAStr += ch;
+                if (ch == '\n') {
+                    genDFAStr += "\\n";
+                }
+                else if (ch == '\t')
+                    genDFAStr += "\\t";
+                else if (ch == '\f')
+                    genDFAStr += "\\f";
+                else if (ch == '\v')
+                    genDFAStr += "\\v";
+                else if (ch == '\r')
+                    genDFAStr += "\\r";
+                else
+                    genDFAStr += ch;
                 genDFAStr += "'";
                 genDFAStr += ",";
             }
@@ -140,30 +164,37 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
     string lex = "";
     char curChar;
     int currentState = 0;
-    while (input >> curChar) {
+    nextCharacter:;
+    while (input.peek() != EOF) {
+        curChar = input.peek();
         bool inputMatched = false;
         for (auto & inp : dfa[currentState]) {
             for (auto & ch : inp.first) {
                 if (curChar == ch) {
-                    inputMatched = true;
                     if (inp.second == -1) {
-                        input.seekg(-1, input.cur);
-                        goto afterLoop;
+                        break;
                     }
+                    inputMatched = true;
                     lex += curChar;
                     currentState = inp.second;
-                    break;
+                    input.get();
+                    goto nextCharacter;
                 }
             }
         }
-        if (!inputMatched) throw "Input doesn't match any token";
+        if (!inputMatched) {
+            if (acceptingStates.find(currentState) != acceptingStates.end()) {
+                break;
+            }
+            if (ignores.find(currentState) != ignores.end())
+                goto begin;
+            throw "Wrong";
+        }
     }
-    afterLoop:
 
-    if (ignores.find(currentState) != ignores.end()) {
+    if (ignores.find(currentState) != ignores.end())
         goto begin;
-    }
-    else if (acceptingStates.find(currentState) == acceptingStates.end()) {
+    if (acceptingStates.find(currentState) == acceptingStates.end()) {
         throw "Input doesn't match any token";
     }
     else {

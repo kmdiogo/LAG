@@ -1,11 +1,10 @@
 class alpha [a-z]
 class alphaCapital [A-Z]
 class num [0-9]
+class test[abcdeA-Z]
+class ws [\n\t\f\v\r\ ]
 
-token numberedVariable /([alpha]|[alphaCapital])+[num]?/
-token phoneNumber /[num][num][num]\-[num][num][num]\-[num][num][num][num]/
-token random /(\[HELLO\])*/
-ignore /\ */
+token fuck /[ws]*/
 
 
 

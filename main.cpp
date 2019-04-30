@@ -15,7 +15,7 @@
 
 
 
-#define PATH "../input.txt"
+#define PATH "../test3.dat"
 using namespace std;
 
 int main() {
