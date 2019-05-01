@@ -188,6 +188,7 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
             }
             if (ignores.find(currentState) != ignores.end())
                 goto begin;
+            cout << "Errored on state: " << currentState << endl;
             throw "Wrong";
         }
     }
@@ -195,6 +196,7 @@ bool LexicalAnalyzer::next(Token &t, string &lexeme) {
     if (ignores.find(currentState) != ignores.end())
         goto begin;
     if (acceptingStates.find(currentState) == acceptingStates.end()) {
+        cout << "Errored on state: " << currentState << endl;
         throw "Input doesn't match any token";
     }
     else {

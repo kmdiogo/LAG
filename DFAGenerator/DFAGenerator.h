@@ -10,6 +10,7 @@
 #include <unordered_set>
 #include <set>
 #include <queue>
+#include <algorithm>
 #include "../NFANode/NFANode.h"
 
 using namespace std;

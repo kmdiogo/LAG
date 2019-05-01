@@ -1,10 +1,19 @@
-class alpha [a-z]
-class alphaCapital [A-Z]
-class num [0-9]
-class test[abcdeA-Z]
-class ws [\n\t\f\v\r\ ]
+class digit19 [1-9]
+class digit09 [0-9]
+class digit07 [0-7]
+class xdigit [0-9a-fA-F]
+class exp [Ee]
+class pm [+-]
 
-token fuck /[ws]*/
+token dNum /0|[digit19][digit09]*/
+token oNum /0[digit07]+/
+token hNum /0x[xdigit]+/
+
+token fpNum /([digit09]+.[digit09]*)?/
+//token fpNum /([digit09]+.[digit09]*|.[digit09]+)([exp][pm]?[digit09]+)?
+
+
+
 
 
 

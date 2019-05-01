@@ -15,14 +15,14 @@
 
 
 
-#define PATH "../test3.dat"
+#define PATH "../input.txt"
 using namespace std;
 
 int main() {
     Parser parser = Parser(PATH);
 
     NFAGenerator nfaGen = NFAGenerator(parser.getParseTrees(), parser.getLookupTable(), parser.getTokenNames());
-    nfaGen.printNFA();
+    //nfaGen.printNFA();
     DFAGenerator dfaGen = DFAGenerator(nfaGen.getNFA(), nfaGen.getInputs());
 
     FileGenerator fileGen = FileGenerator(dfaGen.DFATableSimplified,

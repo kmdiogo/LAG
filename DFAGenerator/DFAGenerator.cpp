@@ -25,7 +25,21 @@ set<int> DFAGenerator::move(set<int> state, vector<char> input) {
             if (edge.transChars == input) {
                 moveStates.insert(edge.transNode);
             }
+
+            /*for (auto & ch : input) {
+                if ( find(edge.transChars.begin(), edge.transChars.end(), ch) == edge.transChars.end()) {
+                    cout << ch << " not in edge {";
+                    for (auto & cha : edge.transChars) {
+                        cout << cha << ",";
+                    }
+                    cout << "}" << endl;
+                    goto nextEdge;
+                }
+            }
+            moveStates.insert(edge.transNode);
+            nextEdge:;*/
         }
+
     }
     return moveStates;
 }
@@ -83,12 +97,12 @@ void DFAGenerator::generateDFA() {
         acceptingStateSimplified[stateAliases[statePair.first]] = statePair.second;
     }
 
-    for (auto & x : stateAliases) {
+    /*for (auto & x : stateAliases) {
         for (auto & i : x.first) {
             cout << i << ",";
         }
         cout << " " << x.second << endl;
-    }
+    }*/
 }
 
 void DFAGenerator::printDFA() {
