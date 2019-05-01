@@ -21,12 +21,16 @@ public:
             map< int, string> & acceptingStates,
             vector<string> tokenNames,
             const set<vector<char>> & inputs,
-            map<string, vector<char>> charClassLookup) {
+            map<string, vector<char>> charClassLookup,
+            string fileLocation,
+            string fileName) {
 
         this->DFATable = DFATable;
         this->acceptingStates = acceptingStates;
         this->tokenNames = tokenNames;
         this->inputs = inputs;
+        this->fileLocation = fileLocation;
+        this->fileName = fileName;
         for (auto & p : charClassLookup) {
             this->charClassLookup[p.second] = p.first;
         }
@@ -48,6 +52,8 @@ private:
     set<vector<char>> inputs;
     vector<string> tokenNames;
     map<vector<char>, string> charClassLookup;
+    string fileLocation;
+    string fileName;
 };
 
 

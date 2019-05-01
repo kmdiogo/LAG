@@ -5,8 +5,6 @@
 #include "FileGenerator.h"
 using namespace std;
 
-const string fileLocation = "../../LAG_Driver/";
-const string fileName = "test";
 void FileGenerator::generateHeader() {
     // Create token enum declaration
     string tokensStr = "enum Token{";
@@ -61,7 +59,6 @@ void FileGenerator::generateBody() {
         genInputsStr += "\tinputs.emplace_back(vector<char>{";
         for (auto & ch : charSet) {
             genInputsStr += "'";
-            cout << "Input : " << ch << endl;
             if (ch == '\n')
                 genInputsStr += "\\n";
             else if (ch == '\t')
@@ -146,8 +143,8 @@ void FileGenerator::generateBody() {
     ofstream outFile;
     outFile.open(fileLocation + fileName + ".cpp");
 
+    outFile << "#include \"" << fileName << ".h\"\n";
     outFile << R"(
-#include "test.h"
 using namespace std;
 
 LexicalAnalyzer::LexicalAnalyzer(ifstream &INPUT) : input(INPUT) {

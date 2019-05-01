@@ -1,0 +1,7 @@
+class digit17 [1-7]
+class digit07 [0-7]
+class xdigit [0-9a-fA-F]
+
+token dNum /0|([digit17]|8|9)([digit17]|8|9|0)*/
+token oNum /0(0|[digit07])+/
+token hNum /0x[xdigit]+/

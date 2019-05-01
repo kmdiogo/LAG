@@ -299,6 +299,10 @@ bool Parser::matchRFactor() {
         }
         cur = getNextToken(file, true);
 
+        if (classLookupTable.find(cur.second) == classLookupTable.end()) {
+            cout << "Error: class set: " << cur.second << " has not been defined" << endl;
+            exit(0);
+        }
         lastNode = ParseTreeNode(IdNode, cur.second);
         lastNode.index = parseTrees.back().size();
         parseTrees.back().emplace_back(lastNode);
