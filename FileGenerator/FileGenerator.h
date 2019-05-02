@@ -29,7 +29,10 @@ public:
         this->acceptingStates = acceptingStates;
         this->tokenNames = tokenNames;
         this->inputs = inputs;
-        this->fileLocation = fileLocation;
+        if (fileLocation[fileLocation.size()-1] != '/')
+            this->fileLocation = fileLocation + '/';
+        else
+            this->fileLocation = fileLocation;
         this->fileName = fileName;
         for (auto & p : charClassLookup) {
             this->charClassLookup[p.second] = p.first;
