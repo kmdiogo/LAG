@@ -38,8 +38,10 @@ public:
             this->charClassLookup[p.second] = p.first;
         }
 
-
+        
+        cout << "Generating '" << fileLocation << fileName << "'.h";
         generateHeader();
+        cout << "Generating '" << fileLocation << fileName << "'.cpp";
         generateBody();
         generateListingFile();
     }
