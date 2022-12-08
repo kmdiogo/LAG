@@ -14,7 +14,7 @@
 using namespace std;
 
 extern "C" {
-    int run(string inputFile, string fileName, string fileLocation = "");
+    int run(string inputFile, string fileName, string fileLocation);
 }
 
 int run(string inputFile, string fileName, string fileLocation = "") {
