@@ -18,8 +18,9 @@ extern "C" {
 }
 
 int run(char* inputFile, char* fileName, char* fileLocation = "") {
+
     cout << "Parsing..." << endl;
-    Parser parser = Parser(inputFile);
+    Parser parser = Parser(string(inputFile));
     cout << "...Parse successful!" << endl << endl;
 
     cout << "Generating NFA..." << endl;
@@ -36,8 +37,8 @@ int run(char* inputFile, char* fileName, char* fileLocation = "") {
             parser.getTokenNames(),
             nfaGen.getInputs(),
             parser.getLookupTable(),
-            fileLocation,
-            fileName);
+            string(fileLocation),
+            string(fileName));
     cout << "...Files successfully generated!" << endl;
 
     return 0;
