@@ -14,10 +14,10 @@
 using namespace std;
 
 extern "C" {
-    int run(string inputFile, string fileName, string fileLocation);
+    int run(char* inputFile, char* fileName, char* fileLocation);
 }
 
-int run(string inputFile, string fileName, string fileLocation = "") {
+int run(char* inputFile, char* fileName, char* fileLocation = "") {
     cout << "Parsing..." << endl;
     Parser parser = Parser(inputFile);
     cout << "...Parse successful!" << endl << endl;
