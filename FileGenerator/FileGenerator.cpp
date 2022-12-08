@@ -16,10 +16,10 @@ void FileGenerator::generateHeader() {
 
     ofstream outFile;
     outFile.open(fileLocation + fileName + ".h");
-    // if (!outFile) {
-    //     cout << "File write error: " << strerror(0) << endl;
-    //     exit(0);
-    // }
+    if (!outFile) {
+        cout << "File write error: " << strerror(0) << endl;
+        exit(0);
+    }
 
     outFile << R"(
 #include <vector>

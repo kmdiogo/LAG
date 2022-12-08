@@ -39,9 +39,9 @@ public:
         }
 
         
-        cout << "Generating '" << fileLocation << fileName << "'.h" << endl;
+        cout << "Generating '" << fileLocation << fileName << ".h'" << endl;
         generateHeader();
-        cout << "Generating '" << fileLocation << fileName << ".cpp" << endl;
+        cout << "Generating '" << fileLocation << fileName << ".cpp'" << endl;
         generateBody();
         generateListingFile();
     }
