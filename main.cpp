@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-// #include <windows.h>
 #include <unordered_set>
 #include <map>
 #include <vector>
@@ -14,7 +13,7 @@
 
 using namespace std;
 
-int main(int argc, char* argv[]) {
+int run(int argc, char* argv[]) {
     if (argc < 3) {
         cout << "Error - please pass the following parameters:" << endl;
         if (argc == 1) {
